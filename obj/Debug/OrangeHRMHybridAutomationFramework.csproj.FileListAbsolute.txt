@@ -243,3 +243,9 @@ G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMH
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.pdb
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.csproj.AssemblyReference.cache
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.dll
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.dll
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.pdb
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.xml
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.pdb
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.xml
