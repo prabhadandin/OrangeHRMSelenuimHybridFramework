@@ -16,7 +16,7 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
         {
             if (extent == null)
             {
-                // 1. Get the path to the Project Root (Goes up from bin/Debug/net4x to Project Folder)
+                //  Get the path to the Project Root (Goes up from bin/Debug/net4x to Project Folder)
                 string basePath = AppDomain.CurrentDomain.BaseDirectory;
                 string projectPath = Path.GetFullPath(Path.Combine(basePath, "..", ".."));
                 string reportDirectory = Path.Combine(projectPath, "Reports");
@@ -29,9 +29,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 sparkReporter.Config.Theme = Theme.Dark;
                 sparkReporter.Config.DocumentTitle = "OrangeHRM Test Report";
                 sparkReporter.Config.ReportName = "Automation Execution Results";
-
-
-                sparkReporter = new ExtentSparkReporter(finalReportPath);
                 extent = new ExtentReports();
                 extent.AttachReporter(sparkReporter);
 

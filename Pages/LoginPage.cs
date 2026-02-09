@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium;
-
-
+﻿using OpenQA.Selenium;
 
 namespace OrangeHRMHybridAutomationFramework.Pages
 {
-    class LoginPage
+   public class LoginPage
     {
         private IWebDriver driver;
 
@@ -28,6 +21,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         {
             // wait if page loads slowly
             var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, System.TimeSpan.FromSeconds(10));
+            // Wait for the username field and interact
             wait.Until(d => d.FindElement(txtUsername)).SendKeys(user);
             driver.FindElement(txtPassword).SendKeys(pass);
             driver.FindElement(btnLogin).Click();
