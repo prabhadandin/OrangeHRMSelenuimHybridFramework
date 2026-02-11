@@ -241,6 +241,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\BaseTest.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Pages\LoginPage.cs" />
     <Compile Include="Pages\PIMPage.cs" />
     <Compile Include="Tests\LoginTest.cs" />

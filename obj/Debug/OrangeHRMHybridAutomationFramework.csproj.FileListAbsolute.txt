@@ -14,6 +14,8 @@ G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\OrangeHRMH
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\OrangeHRMHybridAutomationFramework.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\OrangeHRMHybridAutomationFramework.pdb
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\AngleSharp.dll
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.dll
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExtentReports.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ICSharpCode.SharpZipLib.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\Microsoft.ApplicationInsights.dll
@@ -69,6 +71,10 @@ G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\WebDriver.
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\WebDriver.Support.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\WebDriverManager.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\AngleSharp.xml
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.pdb
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.xml
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.pdb
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.xml
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ICSharpCode.SharpZipLib.pdb
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ICSharpCode.SharpZipLib.xml
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\Microsoft.ApplicationInsights.pdb
@@ -236,16 +242,10 @@ G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ru\Microso
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\tr\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\zh-Hans\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\zh-Hant\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
+G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.csproj.AssemblyReference.cache
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.gentestingplatformentrypointinputcache.cache
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.genautoregisteredextensionsinputcache.cache
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.csproj.CoreCompileInputs.cache
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.csproj.CopyComplete
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.dll
 G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.pdb
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\obj\Debug\OrangeHRMHybridAutomationFramework.csproj.AssemblyReference.cache
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.dll
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.dll
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.pdb
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.xml
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.pdb
-G:\IC_Projects\Excersise\OrangeHRMHybridAutomationFramework\bin\Debug\ExcelDataReader.DataSet.xml
