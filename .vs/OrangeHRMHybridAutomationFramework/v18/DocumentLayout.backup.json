@@ -1,0 +1,114 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|g:\\ic_projects\\excersise\\orangehrmhybridautomationframework\\tests\\logintest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|solutionrelative:tests\\logintest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|g:\\ic_projects\\excersise\\orangehrmhybridautomationframework\\tests\\pimtest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|solutionrelative:tests\\pimtest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|g:\\ic_projects\\excersise\\orangehrmhybridautomationframework\\pages\\loginpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|solutionrelative:pages\\loginpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|g:\\ic_projects\\excersise\\orangehrmhybridautomationframework\\pages\\pimpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|solutionrelative:pages\\pimpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|g:\\ic_projects\\excersise\\orangehrmhybridautomationframework\\utilities\\waitmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C1F68BC2-F7F2-4A74-88AD-2B5D2ECCE06F}|OrangeHRMHybridAutomationFramework.csproj|solutionrelative:utilities\\waitmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginTest.cs",
+              "DocumentMoniker": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Tests\\LoginTest.cs",
+              "RelativeDocumentMoniker": "Tests\\LoginTest.cs",
+              "ToolTip": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Tests\\LoginTest.cs",
+              "RelativeToolTip": "Tests\\LoginTest.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAEkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T07:51:52.402Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "WaitManager.cs",
+              "DocumentMoniker": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Utilities\\WaitManager.cs",
+              "RelativeDocumentMoniker": "Utilities\\WaitManager.cs",
+              "ToolTip": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Utilities\\WaitManager.cs",
+              "RelativeToolTip": "Utilities\\WaitManager.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAcwBkAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T21:41:58.448Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PIMTest.cs",
+              "DocumentMoniker": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Tests\\PIMTest.cs",
+              "RelativeDocumentMoniker": "Tests\\PIMTest.cs",
+              "ToolTip": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Tests\\PIMTest.cs",
+              "RelativeToolTip": "Tests\\PIMTest.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAIAwwBEAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T08:07:09.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginPage.cs",
+              "DocumentMoniker": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Pages\\LoginPage.cs",
+              "RelativeDocumentMoniker": "Pages\\LoginPage.cs",
+              "ToolTip": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Pages\\LoginPage.cs",
+              "RelativeToolTip": "Pages\\LoginPage.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAIAwwDkAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T07:46:50.589Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PIMPage.cs",
+              "DocumentMoniker": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Pages\\PIMPage.cs",
+              "RelativeDocumentMoniker": "Pages\\PIMPage.cs",
+              "ToolTip": "G:\\IC_Projects\\Excersise\\OrangeHRMHybridAutomationFramework\\Pages\\PIMPage.cs",
+              "RelativeToolTip": "Pages\\PIMPage.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAIwCQAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T07:07:08.019Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

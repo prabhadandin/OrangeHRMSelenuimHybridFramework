@@ -11,33 +11,33 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
     {
         public static IEnumerable<TestCaseData> GetUserData(string sheetName)
         {
-            // Path: ProjectRoot/testdata/pim.xlsx
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            string projectPath = Path.GetFullPath(Path.Combine(basePath, "..", "..", ".."));
-            string filePath = Path.Combine(projectPath, "TestData", "EmployeeData.xlsx");
-           
-            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "TestData", "EmployeeData.xlsx");
+
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
             {
-                // Register encoding for .xlsx files
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
                 {
-                    var result = reader.AsDataSet();
-                    var table = result.Tables[sheetName];
-
-                    // Skip header (i=1) and loop through rows
-                    for (int i = 1; i < table.Rows.Count; i++)
+                    DataSet result = reader.AsDataSet(new ExcelDataSetConfiguration()
                     {
-                        string firstName = table.Rows[i][0].ToString();
-                        string lastName = table.Rows[i][1].ToString();
+                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = true }
+                    });
 
-                        // Return strings needed by AddEmployeeFromExcelTest
-                        yield return new TestCaseData(firstName, lastName);
+                    DataTable table = result.Tables[sheetName];
+                    if (table != null)
+                    {
+                        foreach (DataRow row in table.Rows)
+                        {
+                            string firstName = row[0]?.ToString() ?? "";
+                            string lastName = row[1]?.ToString() ?? "";
+
+                            yield return new TestCaseData(firstName, lastName);
+                        }
                     }
                 }
             }
         }
-
     }
 }
+    

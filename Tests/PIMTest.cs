@@ -15,7 +15,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         {
             LoginPage login = new LoginPage(driver);
             test.Log(Status.Info, "Logging in with Admin credentials via SetUp.");
-            login.LoginWithValidCredentials("Admin", "admin123");
+            login.Login("Admin", "admin123");
         }
 
         [Test]

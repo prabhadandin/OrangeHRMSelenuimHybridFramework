@@ -35,6 +35,8 @@ namespace OrangeHRMHybridAutomationFramework.Base
             driver.Manage().Window.Maximize();
             // Implicit wait to find elements that take a second to load
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            //debug
+            //System.Diagnostics.Debugger.Launch();
             driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
         }
         [TearDown]
