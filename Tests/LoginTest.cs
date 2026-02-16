@@ -1,9 +1,10 @@
-﻿using System;
+﻿using AventStack.ExtentReports;
 using NUnit.Framework;
 using OpenQA.Selenium.Support.UI;
 using OrangeHRMHybridAutomationFramework.Base;
 using OrangeHRMHybridAutomationFramework.Pages;
-using AventStack.ExtentReports;
+using OrangeHRMHybridAutomationFramework.Utilities;
+using System;
 
 
 namespace OrangeHRMHybridAutomationFramework.Tests
@@ -21,12 +22,10 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             //  Login with credentials
             test.Log(Status.Info, "Entering credentials and clicking login.");
             login.Login("Admin", "admin123");
-            //  Wait for Dashboard to load
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(100));
-            wait.Until(d => d.Url.Contains("dashboard"));
+            bool isLoaded = WaitManager.WaitForUrlToContain(driver, "dashboard");
             // Assert and Log Result
-            Assert.That(driver.Url, Does.Contain("dashboard"), "Login failed: Dashboard URL not found.");
-            test.Log(Status.Pass, "Successfully navigated to the Dashboard.");
+            Assert.That(isLoaded, Is.True, $"Login failed: Dashboard URL not reached. Current URL: {driver.Url}");
+            test.Log(Status.Pass, "Successfully redirected to Dashboard.");
 
         }
         [Test ,Order(1)]
@@ -73,7 +72,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
 
 
         [Test, Order(4)]
-        public void InvalidPasswordTest()
+        public void InvalidPassword()
         {
             LoginPage login = new LoginPage(driver);
             test.Log(Status.Info, "Starting negative login test with valid username and invalid password.");
@@ -87,6 +86,29 @@ namespace OrangeHRMHybridAutomationFramework.Tests
 
             Assert.That(actualError, Is.EqualTo(expectedError), "The error message text is incorrect.");
             test.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
+        }
+        [Test, Order(4)]
+        public void LogoutTest()
+        {
+            LoginPage login = new LoginPage(driver);
+            test.Log(Status.Info, "Starting Logout  test");
+            login.Login("Admin", "admin123");
+            bool isDashboardLoaded = WaitManager.WaitForUrlToContain(driver, "dashboard");
+            if(isDashboardLoaded)
+            {
+                login.Logout();
+                bool isLogoutSuccess = WaitManager.WaitForUrlToContain(driver, "Login");
+                Assert.That(isLogoutSuccess, Is.True, $"Logout: Login URL not reached. Current URL: {driver.Url}");
+                test.Log(Status.Pass, "Successfully Logout.");
+            }
+            else
+            {
+                test.Log(Status.Fail, $"Login failed: Dashboard was never reached. Current URL: {driver.Url}");
+                Assert.Fail("Test Aborted: Could not reach Dashboard to perform Logout.");
+            }
+
+
+
         }
     }
     }

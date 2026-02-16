@@ -14,7 +14,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
         public IWebDriver driver;
 
         protected ExtentTest test;
-        private ExtentReports extent;
+        protected ExtentReports extent;
         
         [OneTimeSetUp]
         public void GlobalSetup()
@@ -30,14 +30,14 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             //Create the test entry in the report before the test starts
             test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
-            //initialize your driver
+            //initialize driver
             driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
             // Implicit wait to find elements that take a second to load
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            //debug
-            //System.Diagnostics.Debugger.Launch();
+            WaitManager.SetImplicitWait(driver, 10);
             driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
+            WaitManager.SetImplicitWait(driver, 10);
+           
         }
         [TearDown]
         public void TearDown()
@@ -76,7 +76,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
             // Path: ProjectRoot/Reports/Screenshots/
            // Navigate up to Project Root(Adjust ".." count if needed for your bin structure)
             string projectPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", ".."));
-           // string projectPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", ".."));
+  
             string folder = Path.Combine(projectPath, "Reports", "Screenshots");
 
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -86,7 +86,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
             // Capture using Selenium ITakesScreenshot
             var ts = (ITakesScreenshot)driver;
             var screenshot = ts.GetScreenshot();
-            screenshot.SaveAsFile(fullPath); // Selenium 4 style
+            screenshot.SaveAsFile(fullPath); 
 
             return fullPath;
         }
