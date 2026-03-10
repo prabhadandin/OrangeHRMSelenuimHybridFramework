@@ -17,7 +17,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0' # Change to your .NET version
+          dotnet-version: '7.0' # Your .NET version
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v1
+        with:
+          chrome-version: latest
 
       - name: Restore dependencies
         run: dotnet restore
@@ -25,5 +37,5 @@ jobs:
       - name: Build project
         run: dotnet build --no-restore
 
-      - name: Run tests
-        run: dotnet test --no-build
+      - name: Run Selenium tests
+        run: dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
