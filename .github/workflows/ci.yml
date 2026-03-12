@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-# Add permissions so the Test Reporter can post results
 permissions:
   checks: write
   pull-requests: write
@@ -18,46 +17,41 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '7.0'
+          dotnet-version: '7.0' # Matches your project version
 
       - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+          sudo apt install -y google-chrome-stable
 
       - name: Install ChromeDriver
-        uses: nanasess/setup-chromedriver@v1
-        with:
-          chrome-version: latest
+        uses: nanasess/setup-chromedriver@v2
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build project
-        run: dotnet build --no-restore
+      - name: Restore and Build
+        run: |
+          dotnet restore
+          dotnet build --configuration Release --no-restore
 
       - name: Run Selenium tests
-        run: dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
+        # This creates the .trx file that VS uses to show results
+        run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
 
-      # 🔟 MOVE REPORTER HERE - After the tests run
-      - name: Test Report
+      - name: Test Report (The Green Dot)
         uses: dorny/test-reporter@v1
-        if: always() # Ensures report is created even if tests fail
+        if: always() 
         with:
           name: NUnit Selenium Tests
-          path: '**/test_results.trx'
+          path: "**/test_results.trx"
           reporter: dotnet-trx
 
-      - name: Upload Artifacts
-        if: always()
-        uses: actions/upload-artifact@v3
+      - name: Upload Screenshots on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          name: TestResults
-          path: '**/test_results.trx'
+          name: selenium-screenshots
+          path: "**/Reports/Screenshots/*.png"
