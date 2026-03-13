@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -38,7 +38,6 @@ jobs:
           dotnet build --configuration Release --no-restore
 
       - name: Run Selenium tests
-        # This creates the .trx file that VS uses to show results
         run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
 
       - name: Test Report
