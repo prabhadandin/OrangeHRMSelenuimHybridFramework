@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.BiDi.BrowsingContext;
+//using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.Support.UI;
 using OrangeHRMHybridAutomationFramework.Utilities;
 using System;
@@ -18,7 +18,10 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         private By txtUsername = By.Name("username");
         private By txtPassword = By.Name("password");
         private By btnLogin = By.XPath("//button[@type='submit']");
+        // For "Invalid Credentials"
         private By lblErrorMessage = By.XPath("//div[@role='alert']//p");
+        // For "Required" field validation
+        private By lblFieldErrors = By.XPath("//span[contains(@class, 'oxd-input-field-error-message')]");
         private By userDropdown = By.CssSelector(".oxd-userdropdown-tab");
         private By LogoutBtnLocator = By.XPath("//a[contains(text(),'Logout')]");
 
@@ -36,6 +39,11 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         public string GetErrorMessage()
         {
             return WaitManager.GetTextWhenReady(driver, lblErrorMessage);
+        }
+        public string GetFieldErrorMessage()
+        {
+            // This returns the text of the FIRST validation error found (e.g., under Username)
+            return WaitManager.GetTextWhenReady(driver, lblFieldErrors, 10);
         }
         public void Logout()
         {

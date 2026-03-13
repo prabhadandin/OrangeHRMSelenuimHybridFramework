@@ -11,7 +11,9 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
     {
         public static IEnumerable<TestCaseData> GetUserData(string sheetName)
         {
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "TestData", "EmployeeData.xlsx");
+            //string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "TestData", "EmployeeData.xlsx");
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", "EmployeeData.xlsx");
+
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
@@ -29,10 +31,12 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                     {
                         foreach (DataRow row in table.Rows)
                         {
-                            string firstName = row[0]?.ToString() ?? "";
-                            string lastName = row[1]?.ToString() ?? "";
+                            string firstName = row[0]!.ToString()!;
+                            string middleName = row[1]!.ToString()!;
+                            string lastName = row[2]!.ToString()!;  
+                            string employeeId = row[3]!.ToString()!; 
 
-                            yield return new TestCaseData(firstName, lastName);
+                            yield return new TestCaseData(firstName, middleName, lastName, employeeId);
                         }
                     }
                 }
