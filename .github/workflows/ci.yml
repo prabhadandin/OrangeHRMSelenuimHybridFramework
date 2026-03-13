@@ -1,0 +1,57 @@
+name: CI - Run Selenium Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  checks: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # Matches your project version
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt install -y google-chrome-stable
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Restore and Build
+        run: |
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+
+      - name: Run Selenium tests
+        # This creates the .trx file that VS uses to show results
+        run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
+
+      - name: Test Report (The Green Dot)
+        uses: dorny/test-reporter@v1
+        if: always() 
+        with:
+          name: NUnit Selenium Tests
+          path: "**/test_results.trx"
+          reporter: dotnet-trx
+
+      - name: Upload Screenshots on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-screenshots
+          path: "**/Reports/Screenshots/*.png"
