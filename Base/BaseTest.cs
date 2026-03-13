@@ -77,8 +77,20 @@ namespace OrangeHRMHybridAutomationFramework.Base
         }
         public string CaptureScreenshot(string fileName)
         {
-            // Remove invalid characters like " , < , > , | , : from the test name
-            string cleanFileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+            // Remove invalid characters like " , < , > , | , : from the test name to run local
+            //  string cleanFileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+
+
+            //for github run
+            // Get standard invalid chars
+            var invalidChars = Path.GetInvalidFileNameChars();
+            // Add extra characters that GitHub/Windows dislike (", :, <, >, |, *, ?, (, ), ,)
+            string cleanFileName = fileName;
+            foreach (var c in invalidChars) { cleanFileName = cleanFileName.Replace(c, '_'); 
+            }
+            char[] extraForbidden = { '"', ':', '<', '>', '|', '*', '?', ',', '(', ')' };
+            foreach (var c in extraForbidden) { cleanFileName = cleanFileName.Replace(c, '_'); }
+
             // path logic for both Windows and Linux CI
             string projectRoot = AppContext.BaseDirectory;
             // This loop ensures we find the project folder regardless of bin depth
