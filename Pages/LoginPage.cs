@@ -30,6 +30,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         // method to login with valid credentials
         public void Login(string user, string pass)
         {
+           
             // wait if page loads slowly
             WaitManager.WaitUntilVisible(driver, txtUsername).SendKeys(user);
             driver.FindElement(txtPassword).SendKeys(pass);
@@ -48,8 +49,10 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         public void Logout()
         {
 
-           
-            WaitManager.WaitUntilClickable(driver, userDropdown, 10).Click();
+
+            //  WaitManager.WaitUntilClickable(driver, userDropdown, 10).Click();
+            WaitManager.WaitUntilClickable(driver, userDropdown, 10);
+            driver.FindElement(userDropdown).Click();
             WaitManager.WaitUntilClickable(driver, LogoutBtnLocator, 10);
             driver.FindElement(LogoutBtnLocator).Click();
 

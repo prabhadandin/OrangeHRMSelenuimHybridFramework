@@ -2,11 +2,10 @@
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
-using System;
-using System.IO;
 using OrangeHRMHybridAutomationFramework.Utilities;
 using OpenQA.Selenium.Chrome;
 
+[assembly: Parallelizable(ParallelScope.None)]
 namespace OrangeHRMHybridAutomationFramework.Base
 {
     public class BaseTest
@@ -14,26 +13,28 @@ namespace OrangeHRMHybridAutomationFramework.Base
         public IWebDriver driver;
         protected ExtentTest test;
         protected ExtentReports extent;
-
         [OneTimeSetUp]
         public void GlobalSetup()
         {
             extent = ExtentManager.GetInstance();
         }
-
         [SetUp]
         public void Setup()
         {
             test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
-
             var options = new ChromeOptions();
             options.AddArgument("--headless");
+            options.AddArgument("--headless=new");
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--window-size=1920,1080");
-
-            // FIX: Added 2-minute timeout to stop the "WebDriverException: Timed out" in CI
+            // Sets the browser language to English (US)
+            options.AddArgument("--lang=en-US");
+            //  set the specific preference
+            options.AddUserProfilePreference("intl.accept_languages", "en-US");
+            options.AddArgument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            // 2-minute timeout to stop the "WebDriverException: Timed out" in CI
             driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
 
             // Set PageLoad timeout explicitly for CI stability
@@ -60,7 +61,11 @@ namespace OrangeHRMHybridAutomationFramework.Base
             }
             else if (status == TestStatus.Passed)
             {
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string screenshotName = $"{TestContext.CurrentContext.Test.Name}_Success_{timestamp}";
+                string screenShotPath = CaptureScreenshot(screenshotName);
                 test.Log(Status.Pass, "Test Passed.");
+                test.AddScreenCaptureFromPath(screenShotPath);
             }
             driver?.Quit();
         }
@@ -70,31 +75,27 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             extent.Flush();
         }
-
         public string CaptureScreenshot(string fileName)
         {
-            // IMPROVEMENT: More reliable path logic for both Windows and Linux CI
+            // Remove invalid characters like " , < , > , | , : from the test name
+            string cleanFileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+            // path logic for both Windows and Linux CI
             string projectRoot = AppContext.BaseDirectory;
-
             // This loop ensures we find the project folder regardless of bin depth
             DirectoryInfo directory = new DirectoryInfo(projectRoot);
             while (directory != null && !File.Exists(Path.Combine(directory.FullName, "OrangeHRMHybridAutomationFramework.sln")))
             {
                 directory = directory.Parent;
             }
-
             string rootPath = directory?.FullName ?? AppContext.BaseDirectory;
             string folder = Path.Combine(rootPath, "Reports", "Screenshots");
-
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-            string fullPath = Path.Combine(folder, fileName + ".png");
-
+            string fullPath = Path.Combine(folder, cleanFileName + ".png");
             var ts = (ITakesScreenshot)driver;
             var screenshot = ts.GetScreenshot();
             screenshot.SaveAsFile(fullPath);
-
-            return fullPath;
+            // returns a relative path for the HTML report
+            return Path.Combine("Screenshots", cleanFileName + ".png");
         }
     }
 }

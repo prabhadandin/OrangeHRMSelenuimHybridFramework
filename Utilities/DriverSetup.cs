@@ -17,10 +17,7 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("--window-size=1920,1080");
-
             return new ChromeDriver(options);
         }
-
-
     }
 }

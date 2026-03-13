@@ -9,7 +9,6 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         [TestFixture]
         public class PIMTest : BaseTest
         {
-        // runs before every [TestCase]
         [SetUp]
         public void LoginPageSetup()
         {
@@ -22,16 +21,15 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         [TestCaseSource(typeof(ExcelManager), nameof(ExcelManager.GetUserData), new object[] { "EmployeeData" })]
         public void AddEmployeeFromExcelTest(string firstName,string middleName, string lastName,string employeeId)
         {
-            PIMPage pim = new PIMPage(driver);    
-                //  Navigate to PIM and Add Employee using Excel data
+            PIMPage pim = new PIMPage(driver);   
             test.Log(Status.Info, $"Adding employee from Excel: {firstName} {middleName} {lastName} {employeeId}");
+            //  Navigate to PIM page and Add Employee using Excel data
             pim.NavigateToPIM();
-            pim.AddEmployee(firstName, middleName,lastName,employeeId);
-
-                // Verify Success Message
+            pim.AddEmployee(firstName, middleName, lastName, employeeId);
             string successMsg = pim.GetSuccessMessage();
-            Assert.That(successMsg, Does.Contain("Successfully Saved"), $"Failed to add employee: {firstName}");
-
+            // Accept English 'Successfully Saved' OR Chinese '成功' (Success)
+            bool isSuccess = successMsg.Contains("Successfully Saved") || successMsg.Contains("成功");
+            Assert.That(isSuccess, Is.True, $"Failed to add employee. Actual message: '{successMsg}'");
             test.Log(Status.Pass, $"Employee '{firstName} {middleName} {lastName} {employeeId}' successfully added from Excel sheet.");
             }
         }
