@@ -10,9 +10,9 @@ namespace OrangeHRMHybridAutomationFramework.Base
 {
     public class BaseTest
     {
-        public IWebDriver driver;
-        protected ExtentTest test;
-        protected ExtentReports extent;
+        public IWebDriver? driver;
+        protected ExtentTest? test;
+        protected ExtentReports? extent;
         [OneTimeSetUp]
         public void GlobalSetup()
         {

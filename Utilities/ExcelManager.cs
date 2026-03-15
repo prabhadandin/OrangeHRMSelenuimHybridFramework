@@ -43,10 +43,10 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                         
                     foreach (DataRow row in table.Rows)
                     {
-                        string firstName = row["FirstName"].ToString();
-                        string middleName = row["MiddleName"].ToString();
-                        string lastName = row["LastName"].ToString();
-                        string employeeId = row["EmployeeID"].ToString();
+                        string firstName = row["FirstName"].ToString()??"" ;
+                        string middleName = row["MiddleName"].ToString()??"";
+                        string lastName = row["LastName"].ToString()??"";
+                        string employeeId = row["EmployeeID"].ToString()??"";
                         testData.Add(new TestCaseData(firstName, middleName, lastName, employeeId));
 
                     }
