@@ -23,7 +23,11 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
         public static IWebElement WaitUntilVisible(IWebDriver driver, By locator, int seconds = 10)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+
             return wait.Until(d => d.FindElement(locator).Displayed ? d.FindElement(locator) : null);
+
+
+
         }
 
         public static bool WaitForUrlToContain(IWebDriver driver, string fraction, int seconds = 100)
@@ -52,6 +56,25 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
             {
                 var element = d.FindElement(locator);
                 return element.Displayed ? element.Text : null;
+            });
+        }
+
+        // wait for loader to disappear
+        public static void WaitForLoaderToDisappear(IWebDriver driver, By loader, int seconds = 10)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+
+            wait.Until(d =>
+            {
+                try
+                {
+                    var element = d.FindElement(loader);
+                    return !element.Displayed;
+                }
+                catch (NoSuchElementException)
+                {
+                    return true;
+                }
             });
         }
     }
