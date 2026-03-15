@@ -24,7 +24,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         [Test, Order(2)]
         public void LoginWithPasswordFieldEmpty()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver!);
             test.Log(Status.Info, "Negative login test: Username filled, Password empty.");
             login.Login("Admin", "");
             string actualError = login.GetFieldErrorMessage();

@@ -9,9 +9,9 @@ namespace OrangeHRMHybridAutomationFramework.Pages
     {
         private IWebDriver driver;
 
-        public LoginPage(IWebDriver driver)
+        public LoginPage(IWebDriver ? driver)
         {
-            this.driver = driver;
+            this.driver = driver!;
         }
 
         // Locators
