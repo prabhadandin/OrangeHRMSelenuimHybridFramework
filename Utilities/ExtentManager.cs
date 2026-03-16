@@ -8,8 +8,8 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
 {
     public class ExtentManager
     {
-        
-        private static ExtentReports ?extent;
+
+        private static ExtentReports? extent;
         private static ExtentSparkReporter? sparkReporter;
         public static ExtentReports GetInstance()
         {

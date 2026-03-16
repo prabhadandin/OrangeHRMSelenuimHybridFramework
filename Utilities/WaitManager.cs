@@ -1,52 +1,46 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SeleniumExtras.WaitHelpers;
 
 namespace OrangeHRMHybridAutomationFramework.Utilities
 {
-    public static  class WaitManager
+    public static class WaitManager
     {
-        //Method to wait until the element is ready to click
-        public static IWebElement WaitUntilClickable(IWebDriver driver, By locator, int seconds = 10)
-        {
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(d => {
-                var e = d.FindElement(locator);
-                return (e.Displayed && e.Enabled) ? e : null;
-            });
-        }
-        //Method to wait for an element to displayed
-        public static IWebElement WaitUntilVisible(IWebDriver driver, By locator, int seconds = 10)
-        {
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-
-            return wait.Until(d => d.FindElement(locator).Displayed ? d.FindElement(locator) : null);
-
-
-
-        }
-        public static IWebElement WaitUntilVisibleAndStable(IWebDriver driver, By locator, int seconds = 20)
+        public static IWebElement WaitUntilClickable(IWebDriver driver, By locator, int seconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
             return wait.Until(d =>
             {
                 try
                 {
-                    var element = d.FindElement(locator);
-                    return element.Displayed ? element : null;
+                    var el = d.FindElement(locator);
+                    return (el.Displayed && el.Enabled) ? el : null;
                 }
                 catch (StaleElementReferenceException)
                 {
-                    // If stale, retry
                     return null;
                 }
             });
         }
-        public static bool WaitForUrlToContain(IWebDriver driver, string fraction, int seconds = 100)
+
+        public static IWebElement WaitUntilVisible(IWebDriver driver, By locator, int seconds = 20)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+            return wait.Until(d =>
+            {
+                try
+                {
+                    var el = d.FindElement(locator);
+                    return el.Displayed ? el : null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            });
+        }
+
+        public static bool WaitForUrlToContain(IWebDriver driver, string fraction, int seconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
             try
@@ -58,40 +52,16 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 return false;
             }
         }
-        // Method to set Implicit Wait
+
         public static void SetImplicitWait(IWebDriver driver, int seconds)
         {
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(seconds);
         }
 
-        //Method to get the error text once the element is visible
-        public static string GetTextWhenReady(IWebDriver driver, By locator, int seconds = 10)
+        public static void WaitForLoaderToDisappear(IWebDriver driver, By loaderLocator, int seconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(d =>
-            {
-                var element = d.FindElement(locator);
-                return element.Displayed ? element.Text : null;
-            });
-        }
-
-        // wait for loader to disappear
-        public static void WaitForLoaderToDisappear(IWebDriver driver, By loader, int seconds = 10)
-        {
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-
-            wait.Until(d =>
-            {
-                try
-                {
-                    var element = d.FindElement(loader);
-                    return !element.Displayed;
-                }
-                catch (NoSuchElementException)
-                {
-                    return true;
-                }
-            });
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loaderLocator));
         }
     }
 }

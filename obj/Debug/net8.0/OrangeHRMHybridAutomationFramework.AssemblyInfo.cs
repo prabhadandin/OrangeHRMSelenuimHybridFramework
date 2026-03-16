@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OrangeHRMHybridAutomationFramework")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+59a9246576880efb7ed122584ae1c2e90cdad076")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60e15d5412f1fb3fd39240e7bfbf37e0df326282")]
 [assembly: System.Reflection.AssemblyProductAttribute("OrangeHRMHybridAutomationFramework")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OrangeHRMHybridAutomationFramework")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
