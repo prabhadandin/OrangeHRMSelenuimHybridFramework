@@ -2,10 +2,9 @@ name: CI - Run Selenium Tests
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "framework-refactor" ]
   pull_request:
     branches: [ "main", "master" ]
-
 env:
   # Force actions to use Node.js 24 to avoid Node 20 deprecation
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
