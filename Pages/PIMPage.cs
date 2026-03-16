@@ -57,14 +57,22 @@ namespace OrangeHRMHybridAutomationFramework.Pages
 
 
             // Ensure the form is visible before typing
-            WaitManager.WaitUntilVisible(driver, txtFirstName, 20).SendKeys(firstName);
+            //WaitManager.WaitUntilVisible(driver, txtFirstName, 20).SendKeys(firstName);
+            // Wait for loader to disappear
+            WaitManager.WaitForLoaderToDisappear(driver, formLoader, 30);
 
+            // Fill form using safe waits
+            WaitUntilVisibleAndStable(driver, txtFirstName, 30).SendKeys(firstName);
+            WaitUntilVisibleAndStable(driver, txtMiddleName, 20).SendKeys(middleName);
+            WaitUntilVisibleAndStable(driver, txtLastName, 20).SendKeys(lastName);
             // wait.Until(d => d.FindElement(txtMiddleName)).SendKeys(middleName);
-            WaitManager.WaitUntilVisible(driver, txtMiddleName, 20).SendKeys(middleName);
-            WaitManager.WaitUntilClickable(driver, txtLastName, 20).SendKeys(lastName);
+            //WaitManager.WaitUntilVisible(driver, txtMiddleName, 20).SendKeys(middleName);
+            //WaitManager.WaitUntilClickable(driver, txtLastName, 20).SendKeys(lastName);
             // driver.FindElement(txtLastName).SendKeys(lastName);
             //wait for the Employee ID field before clearing / typing
             //var idField = wait.Until(d => d.FindElement(txtEmployeeId));
+            // Click outside to trigger ID validation
+            WaitUntilVisibleAndStable(driver, txtLastName, 20).Click();
             var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId, 20);
 
             // clear autofille first before passing Excel  employee ID
@@ -79,7 +87,23 @@ namespace OrangeHRMHybridAutomationFramework.Pages
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             js.ExecuteScript("arguments[0].click();", saveBtn);
         }
-
+        public static IWebElement WaitUntilVisibleAndStable(IWebDriver driver, By locator, int seconds = 20)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+            return wait.Until(d =>
+            {
+                try
+                {
+                    var element = d.FindElement(locator);
+                    return element.Displayed ? element : null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // If stale, retry
+                    return null;
+                }
+            });
+        }
         public string GetSuccessMessage()
         {
             try

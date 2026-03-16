@@ -29,7 +29,23 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
 
 
         }
-
+        public static IWebElement WaitUntilVisibleAndStable(IWebDriver driver, By locator, int seconds = 20)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+            return wait.Until(d =>
+            {
+                try
+                {
+                    var element = d.FindElement(locator);
+                    return element.Displayed ? element : null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // If stale, retry
+                    return null;
+                }
+            });
+        }
         public static bool WaitForUrlToContain(IWebDriver driver, string fraction, int seconds = 100)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));

@@ -10,9 +10,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
 {
     public class BaseTest
     {
-        public IWebDriver? driver;
-        protected ExtentTest? test;
-        protected ExtentReports? extent;
+        // Initialize non-nullable fields with null! to satisfy compiler
+        public IWebDriver driver = null!;
+        protected ExtentTest test = null!;
+        protected ExtentReports extent = null!; 
         [OneTimeSetUp]
         public void GlobalSetup()
         {

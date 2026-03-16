@@ -21,7 +21,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         [TestCaseSource(typeof(ExcelManager), nameof(ExcelManager.GetUserData), new object[] { "EmployeeData" })]
         public void AddEmployeeFromExcelTest(string firstName,string middleName, string lastName,string employeeId)
         {
-            PIMPage pim = new PIMPage(driver);   
+            PIMPage pim = new PIMPage(driver!);   
             test.Log(Status.Info, $"Adding employee from Excel: {firstName} {middleName} {lastName} {employeeId}");
             //  Navigate to PIM page and Add Employee using Excel data
             pim.NavigateToPIM();
