@@ -78,15 +78,34 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
         public string CaptureScreenshot(string fileName)
         {
-            string cleanFileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+            // Remove invalid characters from filename
+            var invalidChars = Path.GetInvalidFileNameChars();
+
+            foreach (var c in invalidChars)
+            {
+                fileName = fileName.Replace(c, '_');
+            }
+
+            // Additional characters GitHub Actions does not allow
+            char[] extraChars = { '"', ':', '<', '>', '|', '*', '?', ',', '(', ')' };
+
+            foreach (var c in extraChars)
+            {
+                fileName = fileName.Replace(c, '_');
+            }
+
             string folder = Path.Combine(AppContext.BaseDirectory, "Reports", "Screenshots");
-            Directory.CreateDirectory(folder);
-            string fullPath = Path.Combine(folder, cleanFileName + ".png");
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            string fullPath = Path.Combine(folder, fileName + ".png");
 
             var ts = (ITakesScreenshot)driver;
-            ts.GetScreenshot().SaveAsFile(fullPath);
+            var screenshot = ts.GetScreenshot();
+            screenshot.SaveAsFile(fullPath);
 
-            return Path.Combine("Screenshots", cleanFileName + ".png");
+            return Path.Combine("Screenshots", fileName + ".png");
         }
     }
 }
