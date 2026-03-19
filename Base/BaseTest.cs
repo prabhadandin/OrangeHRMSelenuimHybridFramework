@@ -4,18 +4,17 @@ using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OrangeHRMHybridAutomationFramework.Utilities;
-using System;
-using System.IO;
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 namespace OrangeHRMHybridAutomationFramework.Base
-{
-//    [assembly: Parallelizable(ParallelScope.None)]
+{  
     public class BaseTest
     {
-        public IWebDriver driver = null!;
-        protected ExtentTest test = null!;
-        protected ExtentReports extent = null!;
-
+       // ThreadLocal so each parallel test gets its own copy
+         protected ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
+         protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
+         protected ExtentReports extent = null!;
+      
         [OneTimeSetUp]
         public void GlobalSetup()
         {
@@ -25,7 +24,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [SetUp]
         public void Setup()
         {
-            test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+            test.Value = extent.CreateTest(TestContext.CurrentContext.Test.Name);
 
             var options = new ChromeOptions();
             if (Environment.GetEnvironmentVariable("CI") == "true")
@@ -40,10 +39,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
             options.AddUserProfilePreference("intl.accept_languages", "en-US");
 
             // driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
-            driver = DriverSetup.GetDriver();
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            WaitManager.SetImplicitWait(driver, 10);
-            driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
+            driver.Value = DriverSetup.GetDriver();
+            driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
+            WaitManager.SetImplicitWait(driver.Value, 10);
+            driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
         }
 
         [TearDown]
@@ -58,16 +57,16 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             if (status == TestStatus.Failed)
             {
-                test.Log(Status.Fail, message);
-                test.AddScreenCaptureFromPath(screenshotPath);
+                test.Value.Log(Status.Fail, message);
+                test.Value.AddScreenCaptureFromPath(screenshotPath);
             }
             else
             {
-                test.Log(Status.Pass, "Test Passed");
-                test.AddScreenCaptureFromPath(screenshotPath);
+                test.Value.Log(Status.Pass, "Test Passed");
+                test.Value.AddScreenCaptureFromPath(screenshotPath);
             }
 
-            driver.Quit();
+            driver.Value.Quit();
         }
 
         [OneTimeTearDown]
@@ -101,7 +100,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             string fullPath = Path.Combine(folder, fileName + ".png");
 
-            var ts = (ITakesScreenshot)driver;
+            var ts = (ITakesScreenshot)driver.Value;
             var screenshot = ts.GetScreenshot();
             screenshot.SaveAsFile(fullPath);
 
