@@ -38,7 +38,6 @@ namespace OrangeHRMHybridAutomationFramework.Base
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
             options.AddUserProfilePreference("intl.accept_languages", "en-US");
-
             // driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
             driver = DriverSetup.GetDriver();
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
@@ -51,13 +50,14 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             var status = TestContext.CurrentContext.Result.Outcome.Status;
             var message = TestContext.CurrentContext.Result.Message;
-
+            //Generate unique name for the file
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string screenshotName = $"{TestContext.CurrentContext.Test.Name}_{timestamp}";
+            //Save physical file (GitHub Actions Artifacts)
             string screenshotPath = CaptureScreenshot(screenshotName);
-
             if (status == TestStatus.Failed)
             {
+<<<<<<< HEAD
                 test.Log(Status.Fail, message);
                 test.AddScreenCaptureFromPath(screenshotPath);
             }
@@ -65,6 +65,19 @@ namespace OrangeHRMHybridAutomationFramework.Base
             {
                 test.Log(Status.Pass, "Test Passed");
                 test.AddScreenCaptureFromPath(screenshotPath);
+=======
+                //Capture Base64 for the Extent Report (Self-contained in the HTML)
+                string base64 = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
+                test.Value.Log(Status.Fail, "Test Failed: " + message,
+                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
+                //link the physical path in the report
+                test.Value.Info($"Local screenshot saved at: {screenshotPath}");
+            }
+            else
+            {
+                test.Value.Log(Status.Pass, "Test Passed");
+              //  test.Value.AddScreenCaptureFromPath(screenshotPath);
+>>>>>>> Added PIM Employee automation with Excel-driven data, duplicate ID validation, and search verification
             }
 
             driver.Quit();
@@ -73,7 +86,11 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [OneTimeTearDown]
         public void FinalFlush()
         {
+
             extent.Flush();
+            // Disposes the ThreadLocal container
+            driver.Dispose();
+            test.Dispose();
         }
 
         public string CaptureScreenshot(string fileName)
@@ -105,7 +122,9 @@ namespace OrangeHRMHybridAutomationFramework.Base
             var screenshot = ts.GetScreenshot();
             screenshot.SaveAsFile(fullPath);
 
-            return Path.Combine("Screenshots", fileName + ".png");
+            //return Path.Combine("Screenshots", fileName + ".png");
+            // return FULL PATH for ExtentReports
+            return fullPath;
         }
     }
 }
