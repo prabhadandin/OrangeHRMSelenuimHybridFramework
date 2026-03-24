@@ -20,8 +20,14 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
 
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
+            options.PageLoadStrategy = PageLoadStrategy.Normal;
+            var service = ChromeDriverService.CreateDefaultService();
+            service.HideCommandPromptWindow = true;
+            var driver = new ChromeDriver(service, options);
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-            return new ChromeDriver(options);
+            return driver;
         }
     }
 }

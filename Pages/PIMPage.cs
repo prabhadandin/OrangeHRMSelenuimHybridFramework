@@ -40,7 +40,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
 
             WaitManager.WaitForLoaderToDisappear(driver, formLoader);
 
-            // ----- SIMPLE DUPLICATE CHECK -----
+            // duplicate check
             var duplicateError = driver.FindElements(txtIdDuplicateError);
             if (duplicateError.Count > 0)
             {

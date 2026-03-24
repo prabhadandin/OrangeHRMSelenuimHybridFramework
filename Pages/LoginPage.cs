@@ -18,16 +18,14 @@ namespace OrangeHRMHybridAutomationFramework.Pages
             WaitManager.WaitUntilVisible(driver, txtPassword).SendKeys(password);
             WaitManager.WaitUntilClickable(driver, btnLogin).Click();
         }
-
         public string GetFieldErrorMessage() => driver.FindElement(fieldError).Text;
         public string GetErrorMessage() => driver.FindElement(loginError).Text;
-
-        public void Logout()
-        {
-            var userMenu = By.XPath("//span[@class='oxd-userdropdown-tab']");
-            var logoutBtn = By.XPath("//a[text()='Logout']");
-            WaitManager.WaitUntilClickable(driver, userMenu).Click();
-            WaitManager.WaitUntilClickable(driver, logoutBtn).Click();
-        }
+        /* public void Logout()
+         {
+             var userMenu = By.XPath("//span[@class='oxd-userdropdown-tab']");
+             var logoutBtn = By.XPath("//a[text()='Logout']");
+             WaitManager.WaitUntilClickable(driver, userMenu).Click();
+             WaitManager.WaitUntilClickable(driver, logoutBtn).Click();
+         }*/
     }
 }
