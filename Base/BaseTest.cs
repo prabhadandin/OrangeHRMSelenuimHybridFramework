@@ -37,7 +37,6 @@ namespace OrangeHRMHybridAutomationFramework.Base
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
             options.AddUserProfilePreference("intl.accept_languages", "en-US");
-
             // driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
             driver.Value = DriverSetup.GetDriver();
             driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
@@ -50,20 +49,24 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             var status = TestContext.CurrentContext.Result.Outcome.Status;
             var message = TestContext.CurrentContext.Result.Message;
-
+            //Generate unique name for the file
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string screenshotName = $"{TestContext.CurrentContext.Test.Name}_{timestamp}";
+            //Save physical file (GitHub Actions Artifacts)
             string screenshotPath = CaptureScreenshot(screenshotName);
-
             if (status == TestStatus.Failed)
             {
-                test.Value.Log(Status.Fail, message);
-                test.Value.AddScreenCaptureFromPath(screenshotPath);
+                //Capture Base64 for the Extent Report (Self-contained in the HTML)
+                string base64 = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
+                test.Value.Log(Status.Fail, "Test Failed: " + message,
+                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
+                //link the physical path in the report
+                test.Value.Info($"Local screenshot saved at: {screenshotPath}");
             }
             else
             {
                 test.Value.Log(Status.Pass, "Test Passed");
-                test.Value.AddScreenCaptureFromPath(screenshotPath);
+              //  test.Value.AddScreenCaptureFromPath(screenshotPath);
             }
 
             driver.Value.Quit();
@@ -72,7 +75,11 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [OneTimeTearDown]
         public void FinalFlush()
         {
+
             extent.Flush();
+            // Disposes the ThreadLocal container
+            driver.Dispose();
+            test.Dispose();
         }
 
         public string CaptureScreenshot(string fileName)
@@ -104,7 +111,9 @@ namespace OrangeHRMHybridAutomationFramework.Base
             var screenshot = ts.GetScreenshot();
             screenshot.SaveAsFile(fullPath);
 
-            return Path.Combine("Screenshots", fileName + ".png");
+            //return Path.Combine("Screenshots", fileName + ".png");
+            // return FULL PATH for ExtentReports
+            return fullPath;
         }
     }
 }

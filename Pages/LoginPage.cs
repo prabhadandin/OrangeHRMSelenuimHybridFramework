@@ -11,9 +11,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         private By btnLogin = By.XPath("//button[@type='submit']");
         private By fieldError = By.CssSelector(".oxd-input-field-error-message");
         private By loginError = By.CssSelector(".oxd-alert-content");
-
         public LoginPage(IWebDriver driver) => this.driver = driver;
-
         public void Login(string username, string password)
         {
             WaitManager.WaitUntilVisible(driver, txtUsername).SendKeys(username);
