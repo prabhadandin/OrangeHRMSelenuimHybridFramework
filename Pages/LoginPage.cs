@@ -6,7 +6,8 @@ namespace OrangeHRMHybridAutomationFramework.Pages
     public class LoginPage
     {
         private IWebDriver driver;
-        private By txtUsername = By.Name("username");
+        // private By txtUsername = By.Name("username");
+        private By txtUsername = By.CssSelector("[name='username']");
         private By txtPassword = By.Name("password");
         private By btnLogin = By.XPath("//button[@type='submit']");
         private By fieldError = By.CssSelector(".oxd-input-field-error-message");
