@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+	<IsTestProject>true</IsTestProject>
     <!-- NUnit parallel execution -->
     <NUnit_ParallelScope>Fixtures</NUnit_ParallelScope>
     <NUnit_MaxParallelThreads>2</NUnit_MaxParallelThreads>

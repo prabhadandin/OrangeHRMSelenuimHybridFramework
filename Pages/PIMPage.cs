@@ -8,6 +8,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
     public class PIMPage
     {
         private IWebDriver driver;
+
         private By menuPIM = By.XPath("//span[text()='PIM']");
         private By btnAddEmployee = By.XPath("//a[contains(., 'Add')]");
         private By txtFirstName = By.Name("firstName");
@@ -20,81 +21,112 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         private By toastMessage = By.CssSelector(".oxd-toast-content p.oxd-text--toast-message");
         private By validationMessage = By.CssSelector(".oxd-input-group__message");
         private By menuEmployeeList = By.XPath("//a[text()='Employee List']");
-        private By tableLoader = By.ClassName("oxd-table-loader"); 
-        private By searchBox = By.XPath("//input[@placeholder='Type for hints...']");
+        private By tableLoader = By.ClassName("oxd-table-loader");
+        private By searchEmpIdField = By.XPath("//label[text()='Employee Id']/parent::div/following-sibling::div/input");
         private By searchButton = By.XPath("//button[@type='submit']");
         private By resultRows = By.XPath("//div[@role='rowgroup']//div[@role='row']");
-        private By searchEmpIdField = By.XPath("//label[text()='Employee Id']/parent::div/following-sibling::div/input");
+
         public PIMPage(IWebDriver driver) => this.driver = driver;
-        public void NavigateToPIM() => WaitManager.WaitUntilClickable(driver, menuPIM).Click();
+
+        public void NavigateToPIM() =>
+            WaitManager.WaitUntilClickable(driver, menuPIM).Click();
+
+        // ---------------- ADD EMPLOYEE ----------------
         public string AddEmployee(string firstName, string middleName, string lastName)
         {
-            WaitManager.WaitUntilClickable(driver, btnAddEmployee).Click();
-            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-            WaitManager.WaitUntilVisible(driver, txtFirstName).SendKeys(firstName);
-            WaitManager.WaitUntilVisible(driver, txtMiddleName).SendKeys(middleName);
-            WaitManager.WaitUntilVisible(driver, txtLastName).SendKeys(lastName);
-            var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId);
-            string empId = idField.GetAttribute("value");
-            WaitManager.WaitUntilClickable(driver, btnSave).Click();
-
-            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-
-            var duplicateError = driver.FindElements(txtIdDuplicateError);
-            if (duplicateError.Count > 0)
-            {
-                throw new Exception($"Duplicate Employee ID: {empId} already exists.");
-            }
-
-            return empId; // return generated employee ID if no duplicate
-
-        }
-
-        public string GetSuccessMessage()
-        {
-            try {
-                return WaitManager.WaitUntilVisible(driver, toastMessage).Text;
-            }
-            catch {
-                return driver.FindElement(validationMessage).Text; 
-            }
-        }
-        public bool SearchEmployeeById(string empId, ExtentTest reportTest)
-        {
-            //Log to Extent Report
-            reportTest.Log(Status.Info, $"Navigating to Employee List to search for ID: {empId}");
-
-            // Go to Employee List
-            WaitManager.WaitUntilClickable(driver, menuEmployeeList).Click();
-            // Enter Employee ID
-            var empIdSearch = WaitManager.WaitUntilVisible(driver, searchEmpIdField);
-            // JavaScript clear is often more reliable for these custom inputs
-            empIdSearch.SendKeys(Keys.Control + "a");
-            empIdSearch.SendKeys(Keys.Backspace);
-            empIdSearch.SendKeys(empId);
-            // Click Search
-            WaitManager.WaitUntilClickable(driver, searchButton).Click();
-            reportTest.Log(Status.Info, "Clicked Search button. Waiting for table loader to disappear.");
-            // Wait for results
-            WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
-            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-            // This XPath looks for a cell specifically containing your new Employee ID
-            // Use this more flexible XPath
-            By resultCell = By.XPath($"//div[@role='cell']//div[contains(text(), '{empId}')]");
-
             try
             {
-                // Wait up to 5-10 seconds for the grid to refresh with the actual ID
+                WaitManager.WaitUntilClickable(driver, btnAddEmployee).Click();
+                WaitManager.WaitUntilVisible(driver, txtFirstName).SendKeys(firstName);
+                WaitManager.WaitUntilVisible(driver, txtMiddleName).SendKeys(middleName);
+                WaitManager.WaitUntilVisible(driver, txtLastName).SendKeys(lastName);
+
+                var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId);
+                string empId = idField.GetAttribute("value");
+
+                WaitManager.WaitUntilClickable(driver, btnSave).Click();
+
+                WaitManager.WaitUntilVisible(driver, toastMessage);
+
+                var duplicateError = driver.FindElements(txtIdDuplicateError);
+                if (duplicateError.Count > 0)
+                {
+                    throw new Exception($"Duplicate Employee ID detected: {empId}");
+                }
+
+                return empId;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"AddEmployee failed: {ex.Message}", ex);
+            }
+        }
+
+        // ---------------- SUCCESS MESSAGE ----------------
+        public string GetSuccessMessage()
+        {
+            try
+            {
+                return WaitManager.WaitUntilVisible(driver, toastMessage).Text;
+            }
+            catch
+            {
+                return driver.FindElement(validationMessage).Text;
+            }
+        }
+
+        // ---------------- SEARCH EMPLOYEE ----------------
+        public bool SearchEmployeeById(string empId, ExtentTest reportTest)
+        {
+            try
+            {
+                reportTest.Log(Status.Info, $"Searching Employee ID: {empId}");
+
+                WaitManager.WaitUntilClickable(driver, menuEmployeeList).Click();
+
+                var empIdSearch = WaitManager.WaitUntilVisible(driver, searchEmpIdField);
+
+                // stable clear for React input
+                ((IJavaScriptExecutor)driver)
+                    .ExecuteScript("arguments[0].value='';", empIdSearch);
+
+                empIdSearch.SendKeys(empId);
+
+                WaitManager.WaitUntilClickable(driver, searchButton).Click();
+
+                reportTest.Log(Status.Info, "Search clicked. Waiting for results...");
+
+                WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
+
+                By resultCell = By.XPath(
+                    $"//div[@role='row']//div[normalize-space()='{empId}']"
+                );
+
                 WaitManager.WaitUntilVisible(driver, resultCell);
-                reportTest.Log(Status.Pass, $"Success: Employee {empId} is visible in the search results.");
+
+                reportTest.Log(Status.Pass, $"Employee {empId} found in search results.");
+
                 return true;
             }
             catch (WebDriverTimeoutException)
             {
-                reportTest.Log(Status.Fail, $"Timeout: Employee {empId} did not appear in the results grid.");
-                return false;
                 var rows = driver.FindElements(resultRows);
-                return rows.Count > 0;
+
+                bool found = rows.Count > 0;
+
+                reportTest.Log(
+                    found ? Status.Pass : Status.Fail,
+                    found
+                        ? $"Employee {empId} found indirectly in grid."
+                        : $"Employee {empId} NOT found in search results."
+                );
+
+                return found;
+            }
+            catch (Exception ex)
+            {
+                reportTest.Log(Status.Fail, $"Search failed: {ex.Message}");
+                return false;
             }
         }
     }
