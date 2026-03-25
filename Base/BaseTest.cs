@@ -12,7 +12,6 @@ namespace OrangeHRMHybridAutomationFramework.Base
 {
     public class BaseTest
     {
-        // ThreadLocal so each parallel test gets its own copy
         protected ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
         protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
         protected ExtentReports extent = null!;
@@ -32,19 +31,42 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             if (Environment.GetEnvironmentVariable("CI") == "true")
             {
-                // Headless for GitHub Actions
+                // 🔥 CI STABLE OPTIONS
                 options.AddArgument("--headless=new");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--disable-gpu");
+                options.AddArgument("--remote-debugging-port=9222");
+                options.AddArgument("--disable-extensions");
             }
 
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
             options.AddUserProfilePreference("intl.accept_languages", "en-US");
-            driver.Value = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
+
+            Console.WriteLine("Launching browser...");
+
+            driver.Value = new ChromeDriver(
+                ChromeDriverService.CreateDefaultService(),
+                options,
+                TimeSpan.FromMinutes(2)
+            );
+
             driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            WaitManager.SetImplicitWait(driver.Value, 20);
+            WaitManager.SetImplicitWait(driver.Value, 5);
+
+            Console.WriteLine("Navigating to login page...");
+
+            // 🔥 DIRECT LOGIN URL (NO REDIRECT ISSUE)
             driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
+            Console.WriteLine("Waiting for login page to load...");
+
+            // 🔥 CRITICAL WAIT (prevents username not found)
+            WaitManager.WaitForUrlToContain(driver.Value, "auth/login");
+            WaitManager.WaitUntilVisible(driver.Value, By.Name("username"), 30);
+
+            Console.WriteLine("Setup complete.");
         }
 
         [TearDown]
@@ -73,6 +95,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
                     MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
             }
 
+            Console.WriteLine("Closing browser...");
             driver.Value.Quit();
         }
 
@@ -89,16 +112,12 @@ namespace OrangeHRMHybridAutomationFramework.Base
             var invalidChars = Path.GetInvalidFileNameChars();
 
             foreach (var c in invalidChars)
-            {
                 fileName = fileName.Replace(c, '_');
-            }
 
             char[] extraChars = { '"', ':', '<', '>', '|', '*', '?', ',', '(', ')' };
 
             foreach (var c in extraChars)
-            {
                 fileName = fileName.Replace(c, '_');
-            }
 
             string folder = Path.Combine(AppContext.BaseDirectory, "Reports", "Screenshots");
 
