@@ -5,15 +5,16 @@ using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OrangeHRMHybridAutomationFramework.Utilities;
-using System;
-using System.IO;
+
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace OrangeHRMHybridAutomationFramework.Base
 {
     public class BaseTest
     {
-        public IWebDriver driver = null!;
-        protected ExtentTest test = null!;
+        // ThreadLocal so each parallel test gets its own copy
+        protected ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
+        protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
         protected ExtentReports extent = null!;
 
         [OneTimeSetUp]
@@ -25,14 +26,28 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [SetUp]
         public void Setup()
         {
-            test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+            test.Value = extent.CreateTest(TestContext.CurrentContext.Test.Name);
 
-            driver = DriverSetup.GetDriver();
+            var options = new ChromeOptions();
 
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            WaitManager.SetImplicitWait(driver, 10);
+            if (Environment.GetEnvironmentVariable("CI") == "true")
+            {
+                // Headless for GitHub Actions
+                options.AddArgument("--headless=new");
+                options.AddArgument("--no-sandbox");
+                options.AddArgument("--disable-dev-shm-usage");
+            }
 
-            driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("--lang=en-US");
+            options.AddUserProfilePreference("intl.accept_languages", "en-US");
+
+            driver.Value = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
+
+            driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
+            WaitManager.SetImplicitWait(driver.Value, 10);
+
+            driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
         }
 
         [TearDown]
@@ -44,32 +59,32 @@ namespace OrangeHRMHybridAutomationFramework.Base
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string screenshotName = $"{TestContext.CurrentContext.Test.Name}_{timestamp}";
 
-            // Save screenshot file
             string screenshotPath = CaptureScreenshot(screenshotName);
 
-            // Capture Base64 (for embedding in report)
-            string base64 = ((ITakesScreenshot)driver).GetScreenshot().AsBase64EncodedString;
+            string base64 = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
 
             if (status == TestStatus.Failed)
             {
-                test.Log(Status.Fail, "Test Failed: " + message,
+                test.Value.Log(Status.Fail, "Test Failed: " + message,
                     MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
 
-                test.Info($"Screenshot saved at: {screenshotPath}");
+                test.Value.Info($"Screenshot saved at: {screenshotPath}");
             }
             else
             {
-                test.Log(Status.Pass, "Test Passed",
+                test.Value.Log(Status.Pass, "Test Passed",
                     MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
             }
 
-            driver.Quit();
+            driver.Value.Quit();
         }
 
         [OneTimeTearDown]
         public void FinalFlush()
         {
             extent.Flush();
+            driver.Dispose();
+            test.Dispose();
         }
 
         public string CaptureScreenshot(string fileName)
@@ -95,7 +110,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             string fullPath = Path.Combine(folder, fileName + ".png");
 
-            var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+            var screenshot = ((ITakesScreenshot)driver.Value).GetScreenshot();
             screenshot.SaveAsFile(fullPath);
 
             return fullPath;

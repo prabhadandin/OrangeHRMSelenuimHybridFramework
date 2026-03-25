@@ -20,6 +20,8 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 // Create directory if it doesn't exist
                 if (!Directory.Exists(reportDirectory))
                     Directory.CreateDirectory(reportDirectory);
+                //string finalReportPath = Path.Combine(reportDirectory, "ExtentReport.html");
+
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 string finalReportPath = Path.Combine(reportDirectory, $"ExtentReport_{timestamp}.html");
                 //  Initialize Report

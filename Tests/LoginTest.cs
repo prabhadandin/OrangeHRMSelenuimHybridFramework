@@ -7,14 +7,15 @@ using OrangeHRMHybridAutomationFramework.Utilities;
 namespace OrangeHRMHybridAutomationFramework.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.None)]
     public class LoginTest : BaseTest
     {
         [Test, Order(1)]
         public void Login_With_EmptyUsername_And_Password()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver.Value);
 
-            test.Log(Status.Info, "Negative login test: Both Username and Password empty.");
+            test.Value.Log(Status.Info, "Negative login test: Both Username and Password empty.");
 
             login.Login("", "");
 
@@ -24,15 +25,15 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             Assert.That(actualError, Is.EqualTo(expectedError),
                 $"Validation failed. Expected: '{expectedError}', Actual: '{actualError}'");
 
-            test.Log(Status.Pass, $"Received expected error: '{actualError}'");
+            test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
         [Test, Order(2)]
         public void Login_With_Username_Only()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver.Value);
 
-            test.Log(Status.Info, "Negative login test: Username filled, Password empty.");
+            test.Value.Log(Status.Info, "Negative login test: Username filled, Password empty.");
 
             login.Login("Admin", "");
 
@@ -42,15 +43,15 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             Assert.That(actualError, Is.EqualTo(expectedError),
                 $"Validation failed. Expected: '{expectedError}', Actual: '{actualError}'");
 
-            test.Log(Status.Pass, $"Received expected error: '{actualError}'");
+            test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
         [Test, Order(3)]
         public void Login_With_Invalid_Credentials()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver.Value);
 
-            test.Log(Status.Info, "Negative login test: Invalid Username and Password.");
+            test.Value.Log(Status.Info, "Negative login test: Invalid Username and Password.");
 
             login.Login("@13!!**", "tes1#$");
 
@@ -60,15 +61,15 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             Assert.That(actualError, Is.EqualTo(expectedError),
                 $"Validation failed. Expected: '{expectedError}', Actual: '{actualError}'");
 
-            test.Log(Status.Pass, $"Received expected error: '{actualError}'");
+            test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
         [Test, Order(4)]
         public void Login_With_Invalid_Password()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver.Value);
 
-            test.Log(Status.Info, "Negative login test: Valid Username, invalid Password.");
+            test.Value.Log(Status.Info, "Negative login test: Valid Username, invalid Password.");
 
             login.Login("Admin", "wrong_password");
 
@@ -78,41 +79,66 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             Assert.That(actualError, Is.EqualTo(expectedError),
                 $"Validation failed. Expected: '{expectedError}', Actual: '{actualError}'");
 
-            test.Log(Status.Pass, $"Received expected error: '{actualError}'");
+            test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
         [Test, Order(5)]
         public void Login_With_Valid_Credentials()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver.Value);
 
-            test.Log(Status.Info, "Positive login test with valid credentials.");
+            test.Value.Log(Status.Info, "Positive login test with valid credentials.");
 
             login.Login("Admin", "admin123");
 
-            bool isLoaded = WaitManager.WaitForUrlToContain(driver, "dashboard");
+            bool isLoaded = WaitManager.WaitForUrlToContain(driver.Value, "dashboard");
 
             Assert.That(isLoaded, Is.True,
-                $"Login failed: Dashboard not reached. Current URL: {driver.Url}");
+                $"Login failed: Dashboard not reached. Current URL: {driver.Value.Url}");
 
-            test.Log(Status.Pass, "Successfully redirected to Dashboard.");
+            test.Value.Log(Status.Pass, "Successfully redirected to Dashboard.");
         }
 
         [Test, Order(6)]
         public void Login_With_Case_Variation()
         {
-            LoginPage login = new LoginPage(driver);
+            LoginPage login = new LoginPage(driver.Value);
 
-            test.Log(Status.Info, "Case variation login test.");
+            test.Value.Log(Status.Info, "Case variation login test.");
 
             login.Login("admin", "admin123");
 
-            bool isLoaded = WaitManager.WaitForUrlToContain(driver, "dashboard");
+            bool isLoaded = WaitManager.WaitForUrlToContain(driver.Value, "dashboard");
 
             Assert.That(isLoaded, Is.True,
-                $"Login failed unexpectedly. Current URL: {driver.Url}");
+                $"Login failed unexpectedly. Current URL: {driver.Value.Url}");
 
-            test.Log(Status.Pass, "Login successful with lowercase username.");
+            test.Value.Log(Status.Pass, "Login successful with lowercase username.");
+
+            test.Value.Log(Status.Info, "Testing Logout functionality.");
+
+            login.Login("Admin", "admin123");
+
+            bool isDashboardLoaded = WaitManager.WaitForUrlToContain(driver.Value, "dashboard");
+
+            if (isDashboardLoaded)
+            {
+                //login.Logout();
+
+                bool isLogoutSuccess = WaitManager.WaitForUrlToContain(driver.Value, "Login");
+
+                Assert.That(isLogoutSuccess, Is.True,
+                    $"Logout failed: Login page not reached. Current URL: {driver.Value.Url}");
+
+                test.Value.Log(Status.Pass, "Successfully logged out.");
+            }
+            else
+            {
+                test.Value.Log(Status.Fail,
+                    $"Login failed: Dashboard not reached. Current URL: {driver.Value.Url}");
+
+                Assert.Fail("Test Aborted: Cannot perform Logout because Dashboard was not reached.");
+            }
         }
     }
 }
