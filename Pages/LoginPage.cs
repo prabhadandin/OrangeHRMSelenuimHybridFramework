@@ -17,8 +17,18 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         {
             // wait for page to fully render
             WaitManager.WaitUntilVisible(driver, By.TagName("body"));
-            WaitManager.WaitUntilVisible(driver, txtUsername).SendKeys(username);
-            WaitManager.WaitUntilVisible(driver, txtPassword).SendKeys(password);
+            //WaitManager.WaitUntilVisible(driver, txtUsername).SendKeys(username);
+            //WaitManager.WaitUntilVisible(driver, txtPassword).SendKeys(password);
+            //WaitManager.WaitUntilClickable(driver, btnLogin).Click();
+            // 🔥 WAIT specifically for username field (important)
+            var user = WaitManager.WaitUntilVisible(driver, txtUsername,30);
+            user.Clear();
+            user.SendKeys(username);
+
+            var pass = WaitManager.WaitUntilVisible(driver, txtPassword);
+            pass.Clear();
+            pass.SendKeys(password);
+
             WaitManager.WaitUntilClickable(driver, btnLogin).Click();
         }
         public string GetFieldErrorMessage() => driver.FindElement(fieldError).Text;
