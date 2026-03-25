@@ -4,6 +4,7 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using OrangeHRMHybridAutomationFramework.Utilities;
 
 [assembly: Parallelizable(ParallelScope.Fixtures)]
@@ -57,16 +58,31 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             Console.WriteLine("Navigating to login page...");
 
-            // 🔥 DIRECT LOGIN URL (NO REDIRECT ISSUE)
+            
             driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+            // wait full page load
+            new WebDriverWait(driver.Value, TimeSpan.FromSeconds(30))
+                .Until(d => ((IJavaScriptExecutor)d)
+                .ExecuteScript("return document.readyState").ToString() == "complete");
+            // wait username safely
+            var wait = new WebDriverWait(driver.Value, TimeSpan.FromSeconds(30));
+
 
             Console.WriteLine("Waiting for login page to load...");
 
-            // 🔥 CRITICAL WAIT (prevents username not found)
-            WaitManager.WaitForUrlToContain(driver.Value, "auth/login");
-            WaitManager.WaitUntilVisible(driver.Value, By.Name("username"), 30);
 
-            Console.WriteLine("Setup complete.");
+            wait.Until(d =>
+            {
+                try
+                {
+                    var el = d.FindElement(By.CssSelector("input[name='username']"));
+                    return el.Displayed;
+                }
+                catch
+                {
+                    return false;
+                }
+            });
         }
 
         [TearDown]
