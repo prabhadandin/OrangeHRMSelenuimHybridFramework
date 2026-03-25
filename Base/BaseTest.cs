@@ -41,13 +41,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
             options.AddUserProfilePreference("intl.accept_languages", "en-US");
-
             driver.Value = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
-
             driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            WaitManager.SetImplicitWait(driver.Value, 10);
-
-            driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
+            WaitManager.SetImplicitWait(driver.Value, 20);
+            driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
         }
 
         [TearDown]

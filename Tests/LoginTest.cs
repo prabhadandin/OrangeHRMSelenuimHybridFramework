@@ -14,7 +14,6 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         public void Login_With_EmptyUsername_And_Password()
         {
             LoginPage login = new LoginPage(driver.Value);
-
             test.Value.Log(Status.Info, "Negative login test: Both Username and Password empty.");
 
             login.Login("", "");
