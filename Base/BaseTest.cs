@@ -1,19 +1,20 @@
 ﻿using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using OrangeHRMHybridAutomationFramework.Utilities;
-using System;
-using System.IO;
+
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace OrangeHRMHybridAutomationFramework.Base
 {
-//    [assembly: Parallelizable(ParallelScope.None)]
     public class BaseTest
     {
-        public IWebDriver driver = null!;
-        protected ExtentTest test = null!;
+        protected ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
+        protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
         protected ExtentReports extent = null!;
 
         [OneTimeSetUp]
@@ -25,25 +26,60 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [SetUp]
         public void Setup()
         {
-            test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+            test.Value = extent.CreateTest(TestContext.CurrentContext.Test.Name);
 
             var options = new ChromeOptions();
+
             if (Environment.GetEnvironmentVariable("CI") == "true")
             {
-                // Headless for GitHub Actions
                 options.AddArgument("--headless=new");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--disable-gpu");
+                options.AddArgument("--remote-debugging-port=9222");
+                options.AddArgument("--disable-extensions");
             }
+
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
-            options.AddUserProfilePreference("intl.accept_languages", "en-US");
 
-            // driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(2));
-            driver = DriverSetup.GetDriver();
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            WaitManager.SetImplicitWait(driver, 10);
-            driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com");
+            Console.WriteLine("Launching browser...");
+
+            driver.Value = new ChromeDriver(
+                ChromeDriverService.CreateDefaultService(),
+                options,
+                TimeSpan.FromMinutes(2)
+            );
+
+            driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
+            Console.WriteLine("Launching browser...");
+            driver.Value.Manage().Cookies.DeleteAllCookies();
+
+
+            Console.WriteLine("Navigating to login page...");
+
+            driver.Value.Navigate().GoToUrl(
+                "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
+            );
+
+            WebDriverWait wait = new WebDriverWait(driver.Value, TimeSpan.FromSeconds(40));
+
+            // ✅ 1. Wait page ready
+            wait.Until(d =>
+                ((IJavaScriptExecutor)d)
+                .ExecuteScript("return document.readyState")
+                .ToString() == "complete"
+            );
+           
+
+            Console.WriteLine("Page loaded: " + driver.Value.Url);
+
+            wait.Until(d =>
+                d.FindElements(By.XPath("//input[@placeholder='Username' or @name='username' or @type='text']"))
+                 .Count > 0
+            );
+
+            Console.WriteLine("Login page ready.");
         }
 
         [TearDown]
@@ -54,45 +90,44 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string screenshotName = $"{TestContext.CurrentContext.Test.Name}_{timestamp}";
+
             string screenshotPath = CaptureScreenshot(screenshotName);
+
+            string base64 = ((ITakesScreenshot)driver.Value)
+                .GetScreenshot()
+                .AsBase64EncodedString;
 
             if (status == TestStatus.Failed)
             {
-                test.Log(Status.Fail, message);
-                test.AddScreenCaptureFromPath(screenshotPath);
+                test.Value.Log(Status.Fail, "Test Failed: " + message,
+                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
+
+                test.Value.Info($"Screenshot saved at: {screenshotPath}");
             }
             else
             {
-                test.Log(Status.Pass, "Test Passed");
-                test.AddScreenCaptureFromPath(screenshotPath);
+                test.Value.Log(Status.Pass, "Test Passed",
+                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
             }
 
-            driver.Quit();
+            Console.WriteLine("Closing browser...");
+            driver.Value.Quit();
         }
 
         [OneTimeTearDown]
         public void FinalFlush()
         {
             extent.Flush();
+            driver.Dispose();
+            test.Dispose();
         }
 
         public string CaptureScreenshot(string fileName)
         {
-            // Remove invalid characters from filename
             var invalidChars = Path.GetInvalidFileNameChars();
 
             foreach (var c in invalidChars)
-            {
                 fileName = fileName.Replace(c, '_');
-            }
-
-            // Additional characters GitHub Actions does not allow
-            char[] extraChars = { '"', ':', '<', '>', '|', '*', '?', ',', '(', ')' };
-
-            foreach (var c in extraChars)
-            {
-                fileName = fileName.Replace(c, '_');
-            }
 
             string folder = Path.Combine(AppContext.BaseDirectory, "Reports", "Screenshots");
 
@@ -101,11 +136,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             string fullPath = Path.Combine(folder, fileName + ".png");
 
-            var ts = (ITakesScreenshot)driver;
-            var screenshot = ts.GetScreenshot();
+            var screenshot = ((ITakesScreenshot)driver.Value).GetScreenshot();
             screenshot.SaveAsFile(fullPath);
 
-            return Path.Combine("Screenshots", fileName + ".png");
+            return fullPath;
         }
     }
 }

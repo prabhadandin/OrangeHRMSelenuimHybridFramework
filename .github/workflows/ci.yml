@@ -5,8 +5,8 @@ on:
     branches: [ "main", "master", "framework-refactor" ]
   pull_request:
     branches: [ "main", "master" ]
+
 env:
-  # Force actions to use Node.js 24 to avoid Node 20 deprecation
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5   # Updated to v5 for Node 24 support
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x' 
 
@@ -41,7 +41,9 @@ jobs:
           dotnet build --configuration Release --no-restore
 
       - name: Run Selenium tests
-        run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
+        run: |
+          # Run solution with Release | Any CPU, respecting NUnit class-level parallelism
+          dotnet test OrangeHRMHybridAutomationFramework.sln -c Release -p:Platform="Any CPU" --logger "trx;LogFileName=test_results.trx"
 
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -53,14 +55,14 @@ jobs:
 
       - name: Upload Screenshots on Failure
         if: failure()
-        uses: actions/upload-artifact@v5   # Updated to v5
+        uses: actions/upload-artifact@v5
         with:
           name: selenium-screenshots
           path: "**/Reports/Screenshots/*.png"
 
       - name: Upload Extent Reports
         if: always()
-        uses: actions/upload-artifact@v5   # Updated to v5
+        uses: actions/upload-artifact@v5
         with:
           name: Extent-Automation-Report
           path: "**/Reports/"
