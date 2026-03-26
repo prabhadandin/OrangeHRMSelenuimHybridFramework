@@ -2,6 +2,8 @@
 .vs/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
 
 # Build folders
 bin/
@@ -12,3 +14,20 @@ TestResults/
 
 # Logs
 *.log
+
+# Extent Reports (IMPORTANT for your framework)
+Reports/
+*.html
+*.png
+
+# Selenium / WebDriver temp files
+chromedriver.exe
+geckodriver.exe
+
+# NuGet
+*.nupkg
+packages/
+
+# OS files
+.DS_Store
+Thumbs.db

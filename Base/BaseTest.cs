@@ -105,15 +105,20 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             if (status == TestStatus.Failed)
             {
-                test.Value.Log(Status.Fail, "Test Failed: " + message,
-                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
+                // test.Value.Log(Status.Fail, "Test Failed: " + message,
+                //   MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
 
-                test.Value.Info($"Screenshot saved at: {screenshotPath}");
+                // test.Value.Info($"Screenshot saved at: {screenshotPath}");
+                test.Value.Log(Status.Fail, "Test Failed: " + message);
+                test.Value.AddScreenCaptureFromPath(screenshotPath);
             }
             else
             {
-                test.Value.Log(Status.Pass, "Test Passed",
-                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
+                // test.Value.Log(Status.Pass, "Test Passed",
+                //   MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
+                test.Value.Log(Status.Pass, "Test Passed");
+                test.Value.AddScreenCaptureFromPath(screenshotPath);
+
             }
 
             driver.Value?.Quit();
