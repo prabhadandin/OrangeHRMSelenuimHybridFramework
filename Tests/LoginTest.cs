@@ -116,15 +116,13 @@ namespace OrangeHRMHybridAutomationFramework.Tests
 
             test.Value.Log(Status.Info, "Testing Logout functionality.");
 
-            login.Login("Admin", "admin123");
-
             bool isDashboardLoaded = WaitManager.WaitForUrlToContain(driver.Value, "dashboard");
 
             if (isDashboardLoaded)
             {
-                //login.Logout();
+                login.Logout();
 
-                bool isLogoutSuccess = WaitManager.WaitForUrlToContain(driver.Value, "Login");
+                bool isLogoutSuccess = WaitManager.WaitForUrlToContain(driver.Value, "auth/Login");
 
                 Assert.That(isLogoutSuccess, Is.True,
                     $"Logout failed: Login page not reached. Current URL: {driver.Value.Url}");

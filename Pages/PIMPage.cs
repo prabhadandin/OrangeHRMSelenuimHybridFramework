@@ -1,5 +1,4 @@
 ﻿using AventStack.ExtentReports;
-using AventStack.ExtentReports.Model;
 using OpenQA.Selenium;
 using OrangeHRMHybridAutomationFramework.Utilities;
 
@@ -24,108 +23,75 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         private By tableLoader = By.ClassName("oxd-table-loader");
         private By searchEmpIdField = By.XPath("//label[text()='Employee Id']/parent::div/following-sibling::div/input");
         private By searchButton = By.XPath("//button[@type='submit']");
-        private By resultRows = By.XPath("//div[@role='rowgroup']//div[@role='row']");
+        private By resultCellTemplate = By.XPath("//div[@role='cell']"); // will replace dynamically
 
         public PIMPage(IWebDriver driver) => this.driver = driver;
 
-        public void NavigateToPIM() =>
-            WaitManager.WaitUntilClickable(driver, menuPIM).Click();
+        public void NavigateToPIM() => WaitManager.WaitUntilClickable(driver, menuPIM).Click();
 
-        // ---------------- ADD EMPLOYEE ----------------
         public string AddEmployee(string firstName, string middleName, string lastName)
         {
+            WaitManager.WaitUntilClickable(driver, btnAddEmployee).Click();
+            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
+
+            WaitManager.WaitUntilVisible(driver, txtFirstName).SendKeys(firstName);
+            WaitManager.WaitUntilVisible(driver, txtMiddleName).SendKeys(middleName);
+            WaitManager.WaitUntilVisible(driver, txtLastName).SendKeys(lastName);
+
+            var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId);
+            string empId = idField.GetAttribute("value");
+
+            WaitManager.WaitUntilClickable(driver, btnSave).Click();
+
+            // Duplicate ID check
             try
             {
-                WaitManager.WaitUntilClickable(driver, btnAddEmployee).Click();
-                WaitManager.WaitUntilVisible(driver, txtFirstName).SendKeys(firstName);
-                WaitManager.WaitUntilVisible(driver, txtMiddleName).SendKeys(middleName);
-                WaitManager.WaitUntilVisible(driver, txtLastName).SendKeys(lastName);
+                var duplicateErrors = driver.FindElements(txtIdDuplicateError);
+                if (duplicateErrors.Count > 0)
+                    throw new Exception($"Duplicate Employee ID: {empId} already exists.");
 
-                var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId);
-                string empId = idField.GetAttribute("value");
-
-                WaitManager.WaitUntilClickable(driver, btnSave).Click();
-
-                WaitManager.WaitUntilVisible(driver, toastMessage);
-
-                var duplicateError = driver.FindElements(txtIdDuplicateError);
-                if (duplicateError.Count > 0)
-                {
-                    throw new Exception($"Duplicate Employee ID detected: {empId}");
-                }
-
-                return empId;
+                string toast = WaitManager.WaitUntilVisible(driver, toastMessage).Text;
+                if (!toast.Contains("Success"))
+                    throw new Exception("Employee not added. Message: " + toast);
             }
-            catch (Exception ex)
+            catch (WebDriverTimeoutException)
             {
-                throw new Exception($"AddEmployee failed: {ex.Message}", ex);
+                var errors = driver.FindElements(validationMessage);
+                if (errors.Count > 0)
+                    throw new Exception("Employee not added. Validation error: " + errors[0].Text);
+
+                throw new Exception("Employee not added. No success message or validation error appeared.");
             }
+
+            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
+            return empId;
         }
 
-        // ---------------- SUCCESS MESSAGE ----------------
-        public string GetSuccessMessage()
-        {
-            try
-            {
-                return WaitManager.WaitUntilVisible(driver, toastMessage).Text;
-            }
-            catch
-            {
-                return driver.FindElement(validationMessage).Text;
-            }
-        }
-
-        // ---------------- SEARCH EMPLOYEE ----------------
         public bool SearchEmployeeById(string empId, ExtentTest reportTest)
         {
+            reportTest.Log(Status.Info, $"Searching for Employee ID: {empId}");
+            WaitManager.WaitUntilClickable(driver, menuEmployeeList).Click();
+
+            var searchField = WaitManager.WaitUntilVisible(driver, searchEmpIdField);
+            searchField.SendKeys(Keys.Control + "a");
+            searchField.SendKeys(Keys.Backspace);
+            searchField.SendKeys(empId);
+
+            WaitManager.WaitUntilClickable(driver, searchButton).Click();
+            WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
+            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
+
+            By resultCell = By.XPath($"//div[@role='cell']//div[text()='{empId}']");
+
             try
             {
-                reportTest.Log(Status.Info, $"Searching Employee ID: {empId}");
-
-                WaitManager.WaitUntilClickable(driver, menuEmployeeList).Click();
-
-                var empIdSearch = WaitManager.WaitUntilVisible(driver, searchEmpIdField);
-
-                // stable clear for React input
-                ((IJavaScriptExecutor)driver)
-                    .ExecuteScript("arguments[0].value='';", empIdSearch);
-
-                empIdSearch.SendKeys(empId);
-
-                WaitManager.WaitUntilClickable(driver, searchButton).Click();
-
-                reportTest.Log(Status.Info, "Search clicked. Waiting for results...");
-
-                WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
-
-                By resultCell = By.XPath(
-                    $"//div[@role='row']//div[normalize-space()='{empId}']"
-                );
-
                 WaitManager.WaitUntilVisible(driver, resultCell);
-
                 reportTest.Log(Status.Pass, $"Employee {empId} found in search results.");
-
                 return true;
             }
             catch (WebDriverTimeoutException)
             {
-                var rows = driver.FindElements(resultRows);
-
-                bool found = rows.Count > 0;
-
-                reportTest.Log(
-                    found ? Status.Pass : Status.Fail,
-                    found
-                        ? $"Employee {empId} found indirectly in grid."
-                        : $"Employee {empId} NOT found in search results."
-                );
-
-                return found;
-            }
-            catch (Exception ex)
-            {
-                reportTest.Log(Status.Fail, $"Search failed: {ex.Message}");
+                reportTest.Log(Status.Fail, $"Employee {empId} NOT found in search results.");
                 return false;
             }
         }

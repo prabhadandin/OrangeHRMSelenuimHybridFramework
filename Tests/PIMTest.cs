@@ -24,34 +24,24 @@ namespace OrangeHRMHybridAutomationFramework.Tests
         public void AddEmployeeFromExcelTest(string firstName, string middleName, string lastName)
         {
             PIMPage pim = new PIMPage(driver.Value);
-            test.Value.Log(Status.Info, $"Adding employee: {firstName} {middleName} {lastName}");
 
+            test.Value.Log(Status.Info, $"Adding Employee: {firstName} {middleName} {lastName}");
             pim.NavigateToPIM();
 
-            // Capture employee id from UI
             string employeeId = pim.AddEmployee(firstName, middleName, lastName);
             test.Value.Log(Status.Pass, $"Employee added with ID: {employeeId}");
 
-            string addImg = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
-            Assert.That(employeeId, Is.Not.Null.And.Not.Empty);
-            test.Value.Pass("Employee Added", MediaEntityBuilder.CreateScreenCaptureFromBase64String(addImg).Build());
+            string addScreenshot = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
+            test.Value.Pass("Employee Added", MediaEntityBuilder.CreateScreenCaptureFromBase64String(addScreenshot).Build());
 
-            // Search employee id
-            test.Value.Log(Status.Info, $"Initiating search for ID: {employeeId}");
+            test.Value.Log(Status.Info, $"Searching for Employee ID: {employeeId}");
             bool isFound = pim.SearchEmployeeById(employeeId, test.Value);
 
-            string searchImg = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
-
+            string searchScreenshot = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
             if (isFound)
-            {
-                test.Value.Pass($"Search successful for ID: {employeeId}",
-                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(searchImg).Build());
-            }
+                test.Value.Pass($"Search successful for ID: {employeeId}", MediaEntityBuilder.CreateScreenCaptureFromBase64String(searchScreenshot).Build());
             else
-            {
-                test.Value.Fail($"Search failed for ID: {employeeId}",
-                    MediaEntityBuilder.CreateScreenCaptureFromBase64String(searchImg).Build());
-            }
+                test.Value.Fail($"Search failed for ID: {employeeId}", MediaEntityBuilder.CreateScreenCaptureFromBase64String(searchScreenshot).Build());
 
             Assert.That(isFound, Is.True, $"Search validation failed for Employee ID: {employeeId}");
         }

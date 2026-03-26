@@ -32,7 +32,6 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             if (Environment.GetEnvironmentVariable("CI") == "true")
             {
-                // 🔥 CI STABLE OPTIONS
                 options.AddArgument("--headless=new");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--disable-dev-shm-usage");
@@ -43,7 +42,6 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--lang=en-US");
-            options.AddUserProfilePreference("intl.accept_languages", "en-US");
 
             Console.WriteLine("Launching browser...");
 
@@ -54,35 +52,34 @@ namespace OrangeHRMHybridAutomationFramework.Base
             );
 
             driver.Value.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            WaitManager.SetImplicitWait(driver.Value, 5);
+            Console.WriteLine("Launching browser...");
+            driver.Value.Manage().Cookies.DeleteAllCookies();
+
 
             Console.WriteLine("Navigating to login page...");
 
-            
-            driver.Value.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-            // wait full page load
-            new WebDriverWait(driver.Value, TimeSpan.FromSeconds(30))
-                .Until(d => ((IJavaScriptExecutor)d)
-                .ExecuteScript("return document.readyState").ToString() == "complete");
-            // wait username safely
-            var wait = new WebDriverWait(driver.Value, TimeSpan.FromSeconds(30));
+            driver.Value.Navigate().GoToUrl(
+                "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
+            );
 
+            WebDriverWait wait = new WebDriverWait(driver.Value, TimeSpan.FromSeconds(40));
 
-            Console.WriteLine("Waiting for login page to load...");
+            // ✅ 1. Wait page ready
+            wait.Until(d =>
+                ((IJavaScriptExecutor)d)
+                .ExecuteScript("return document.readyState")
+                .ToString() == "complete"
+            );
+           
 
+            Console.WriteLine("Page loaded: " + driver.Value.Url);
 
             wait.Until(d =>
-            {
-                try
-                {
-                    var el = d.FindElement(By.CssSelector("input[name='username']"));
-                    return el.Displayed;
-                }
-                catch
-                {
-                    return false;
-                }
-            });
+                d.FindElements(By.XPath("//input[@placeholder='Username' or @name='username' or @type='text']"))
+                 .Count > 0
+            );
+
+            Console.WriteLine("Login page ready.");
         }
 
         [TearDown]
@@ -96,7 +93,9 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             string screenshotPath = CaptureScreenshot(screenshotName);
 
-            string base64 = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
+            string base64 = ((ITakesScreenshot)driver.Value)
+                .GetScreenshot()
+                .AsBase64EncodedString;
 
             if (status == TestStatus.Failed)
             {
@@ -128,11 +127,6 @@ namespace OrangeHRMHybridAutomationFramework.Base
             var invalidChars = Path.GetInvalidFileNameChars();
 
             foreach (var c in invalidChars)
-                fileName = fileName.Replace(c, '_');
-
-            char[] extraChars = { '"', ':', '<', '>', '|', '*', '?', ',', '(', ')' };
-
-            foreach (var c in extraChars)
                 fileName = fileName.Replace(c, '_');
 
             string folder = Path.Combine(AppContext.BaseDirectory, "Reports", "Screenshots");
