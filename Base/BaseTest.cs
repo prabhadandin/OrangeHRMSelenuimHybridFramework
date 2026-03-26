@@ -20,7 +20,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            extent = ExtentManager.GetInstance();
+            if (extent == null)
+            {
+                extent = ExtentManager.GetInstance();
+            }
         }
 
         [SetUp]
@@ -125,9 +128,14 @@ namespace OrangeHRMHybridAutomationFramework.Base
         }
         public void FinalFlush()
         {
-            extent.Flush();
-            driver.Dispose();
+
+            if (extent != null)
+            {
+                extent.Flush(); // This command physically creates the HTML file
+            }
             test.Dispose();
+            driver.Dispose();
+           
         }
 
         public string CaptureScreenshot(string fileName)
