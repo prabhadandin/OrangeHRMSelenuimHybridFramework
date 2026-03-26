@@ -87,10 +87,22 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             var status = TestContext.CurrentContext.Result.Outcome.Status;
             var message = TestContext.CurrentContext.Result.Message;
+
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string screenshotName = $"{TestContext.CurrentContext.Test.Name}_{timestamp}";
+
+            string testName = TestContext.CurrentContext.Test.Name;
+            string safeTestName = new string(testName
+                .Where(c => !Path.GetInvalidFileNameChars().Contains(c))
+                .ToArray());
+
+            string screenshotName = $"{safeTestName}_{timestamp}";
+
             string screenshotPath = CaptureScreenshot(screenshotName);
-            string base64 = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
+
+            string base64 = ((ITakesScreenshot)driver.Value)
+                .GetScreenshot()
+                .AsBase64EncodedString;
+
             if (status == TestStatus.Failed)
             {
                 test.Value.Log(Status.Fail, "Test Failed: " + message,
@@ -104,11 +116,8 @@ namespace OrangeHRMHybridAutomationFramework.Base
                     MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64).Build());
             }
 
-            Console.WriteLine("Closing browser...");
-            driver.Value.Quit();
+            driver.Value?.Quit();
         }
-
-        [OneTimeTearDown]
         public void FinalFlush()
         {
             extent.Flush();
