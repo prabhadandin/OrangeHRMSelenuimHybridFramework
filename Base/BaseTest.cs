@@ -87,16 +87,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             var status = TestContext.CurrentContext.Result.Outcome.Status;
             var message = TestContext.CurrentContext.Result.Message;
-
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string screenshotName = $"{TestContext.CurrentContext.Test.Name}_{timestamp}";
-
             string screenshotPath = CaptureScreenshot(screenshotName);
-
-            string base64 = ((ITakesScreenshot)driver.Value)
-                .GetScreenshot()
-                .AsBase64EncodedString;
-
+            string base64 = ((ITakesScreenshot)driver.Value).GetScreenshot().AsBase64EncodedString;
             if (status == TestStatus.Failed)
             {
                 test.Value.Log(Status.Fail, "Test Failed: " + message,
