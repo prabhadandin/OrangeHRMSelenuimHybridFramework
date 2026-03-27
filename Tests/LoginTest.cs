@@ -7,7 +7,7 @@ using OrangeHRMHybridAutomationFramework.Utilities;
 namespace OrangeHRMHybridAutomationFramework.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
+   
     public class LoginTest : BaseTest
     {
         [Test, Order(1)]

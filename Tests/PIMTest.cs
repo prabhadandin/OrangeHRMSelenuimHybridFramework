@@ -8,7 +8,7 @@ using OrangeHRMHybridAutomationFramework.Utilities;
 namespace OrangeHRMHybridAutomationFramework.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
+    
     public class PIMTest : BaseTest
     {
         [SetUp]

@@ -9,6 +9,7 @@ using OpenQA.Selenium.Support.UI;
 using OrangeHRMHybridAutomationFramework.Utilities;
 
 [assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: LevelOfParallelism(2)]
 
 namespace OrangeHRMHybridAutomationFramework.Base
 {
@@ -82,6 +83,8 @@ namespace OrangeHRMHybridAutomationFramework.Base
             );
 
             Console.WriteLine("Login page ready.");
+            Console.WriteLine($"TEST: {TestContext.CurrentContext.Test.Name}");
+            Console.WriteLine($"THREAD: {Thread.CurrentThread.ManagedThreadId}");
         }
 
         [TearDown]
