@@ -37,6 +37,10 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 {
                     return null;
                 }
+                catch (NoSuchElementException) 
+                {
+                    return null;
+                }
             });
         }
 

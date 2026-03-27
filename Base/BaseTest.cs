@@ -1,5 +1,6 @@
 ﻿using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
@@ -20,10 +21,8 @@ namespace OrangeHRMHybridAutomationFramework.Base
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            if (extent == null)
-            {
                 extent = ExtentManager.GetInstance();
-            }
+            
         }
 
         [SetUp]
@@ -67,7 +66,7 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             WebDriverWait wait = new WebDriverWait(driver.Value, TimeSpan.FromSeconds(40));
 
-            // ✅ 1. Wait page ready
+            //  Wait page ready
             wait.Until(d =>
                 ((IJavaScriptExecutor)d)
                 .ExecuteScript("return document.readyState")
@@ -95,8 +94,16 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             string testName = TestContext.CurrentContext.Test.Name;
             string safeTestName = new string(testName
-                .Where(c => !Path.GetInvalidFileNameChars().Contains(c))
-                .ToArray());
+              .Where(c => !Path.GetInvalidFileNameChars().Contains(c))
+           .ToArray());
+          
+            // extra fix for CI (IMPORTANT)
+            safeTestName = safeTestName
+                .Replace("\"", "_")
+                .Replace("(", "_")
+                .Replace(")", "_")
+                .Replace(",", "_")
+                .Replace(" ", "_");
 
             string screenshotName = $"{safeTestName}_{timestamp}";
 
@@ -126,16 +133,21 @@ namespace OrangeHRMHybridAutomationFramework.Base
 
             driver.Value?.Quit();
         }
-        public void FinalFlush()
-        {
+        /* public void FinalFlush()
+         {
 
-            if (extent != null)
-            {
-                extent.Flush(); // This command physically creates the HTML file
-            }
-            test.Dispose();
-            driver.Dispose();
-           
+             if (extent != null)
+             {
+                 extent.Flush();
+             }
+             test.Dispose();
+             driver.Dispose();
+
+         }*/
+        [OneTimeTearDown]
+        public void GlobalTearDown()
+        {
+            extent?.Flush();
         }
 
         public string CaptureScreenshot(string fileName)
@@ -143,7 +155,8 @@ namespace OrangeHRMHybridAutomationFramework.Base
             var invalidChars = Path.GetInvalidFileNameChars();
 
             foreach (var c in invalidChars)
-                fileName = fileName.Replace(c, '_');
+            fileName = fileName.Replace(c, '_');
+            fileName = fileName.Replace("\"", "_");
 
             string folder = Path.Combine(AppContext.BaseDirectory, "Reports", "Screenshots");
 

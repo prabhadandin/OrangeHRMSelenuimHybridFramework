@@ -40,6 +40,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
 
             var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId);
             string empId = idField.GetAttribute("value");
+            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
 
             WaitManager.WaitUntilClickable(driver, btnSave).Click();
 

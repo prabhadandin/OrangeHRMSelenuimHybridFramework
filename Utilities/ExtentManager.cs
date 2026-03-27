@@ -35,6 +35,7 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 extent.AddSystemInfo("Environment", "QA");
                 extent.AddSystemInfo("Tester", "Prabha");
                 extent.AddSystemInfo("OS", Environment.OSVersion.ToString());
+                Console.WriteLine("Report Path: " + finalReportPath);
             }
             return extent;
         }
