@@ -7,10 +7,9 @@ using OrangeHRMHybridAutomationFramework.Utilities;
 namespace OrangeHRMHybridAutomationFramework.Tests
 {
     [TestFixture]
-   
     public class LoginTest : BaseTest
     {
-        [Test, Order(1)]
+        [Test]
         public void Login_With_EmptyUsername_And_Password()
         {
             LoginPage login = new LoginPage(driver.Value);
@@ -27,7 +26,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
-        [Test, Order(2)]
+        [Test]
         public void Login_With_Username_Only()
         {
             LoginPage login = new LoginPage(driver.Value);
@@ -45,7 +44,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
-        [Test, Order(3)]
+        [Test]
         public void Login_With_Invalid_Credentials()
         {
             LoginPage login = new LoginPage(driver.Value);
@@ -63,7 +62,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
-        [Test, Order(4)]
+        [Test]
         public void Login_With_Invalid_Password()
         {
             LoginPage login = new LoginPage(driver.Value);
@@ -81,7 +80,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             test.Value.Log(Status.Pass, $"Negative test passed: Received expected error '{actualError}'.");
         }
 
-        [Test, Order(5)]
+        [Test]
         public void Login_With_Valid_Credentials()
         {
             LoginPage login = new LoginPage(driver.Value);
@@ -98,7 +97,7 @@ namespace OrangeHRMHybridAutomationFramework.Tests
             test.Value.Log(Status.Pass, "Successfully redirected to Dashboard.");
         }
 
-        [Test, Order(6)]
+        [Test]
         public void Login_With_Case_Variation()
         {
             LoginPage login = new LoginPage(driver.Value);

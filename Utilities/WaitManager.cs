@@ -43,7 +43,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 }
             });
         }
-
         public static bool WaitForUrlToContain(IWebDriver driver, string fraction, int seconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
@@ -56,12 +55,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 return false;
             }
         }
-
-        public static void SetImplicitWait(IWebDriver driver, int seconds)
-        {
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(seconds);
-        }
-
         public static void WaitForLoaderToDisappear(IWebDriver driver, By loaderLocator, int seconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));

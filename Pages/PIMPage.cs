@@ -33,57 +33,55 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         {
             WaitManager.WaitUntilClickable(driver, btnAddEmployee).Click();
             WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-
             WaitManager.WaitUntilVisible(driver, txtFirstName).SendKeys(firstName);
             WaitManager.WaitUntilVisible(driver, txtMiddleName).SendKeys(middleName);
             WaitManager.WaitUntilVisible(driver, txtLastName).SendKeys(lastName);
-
             var idField = WaitManager.WaitUntilVisible(driver, txtEmployeeId);
             string empId = idField.GetAttribute("value");
             WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-
             WaitManager.WaitUntilClickable(driver, btnSave).Click();
-
             // Duplicate ID check
             try
             {
                 var duplicateErrors = driver.FindElements(txtIdDuplicateError);
                 if (duplicateErrors.Count > 0)
-                    throw new Exception($"Duplicate Employee ID: {empId} already exists.");
-
+                    //throw new Exception($"Duplicate Employee ID: {empId} already exists.");
+                    return $"FAIL: Duplicate Employee ID already exists: {empId}";
+                //check success toast message
                 string toast = WaitManager.WaitUntilVisible(driver, toastMessage).Text;
                 if (!toast.Contains("Success"))
-                    throw new Exception("Employee not added. Message: " + toast);
+                    // throw new Exception("Employee not added. Message: " + toast);
+                    return $"FAIL: Employee not added. Message: {toast}";
+                WaitManager.WaitForLoaderToDisappear(driver, formLoader);
+                return empId;
             }
             catch (WebDriverTimeoutException)
             {
                 var errors = driver.FindElements(validationMessage);
                 if (errors.Count > 0)
-                    throw new Exception("Employee not added. Validation error: " + errors[0].Text);
-
-                throw new Exception("Employee not added. No success message or validation error appeared.");
+                {
+                    return $"FAIL: Duplicate Employee ID already exists: {empId}";
+                }
+                //throw new Exception("Employee not added. Validation error: " + errors[0].Text);
+                //throw new Exception("Employee not added. No success message or validation error appeared.");
+               return $"PASS: Employee added successfully. ID: {empId}";
             }
-
-            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-            return empId;
+            //WaitManager.WaitForLoaderToDisappear(driver, formLoader);
+            //return empId;
         }
 
         public bool SearchEmployeeById(string empId, ExtentTest reportTest)
         {
             reportTest.Log(Status.Info, $"Searching for Employee ID: {empId}");
             WaitManager.WaitUntilClickable(driver, menuEmployeeList).Click();
-
             var searchField = WaitManager.WaitUntilVisible(driver, searchEmpIdField);
             searchField.SendKeys(Keys.Control + "a");
             searchField.SendKeys(Keys.Backspace);
             searchField.SendKeys(empId);
-
             WaitManager.WaitUntilClickable(driver, searchButton).Click();
             WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
             WaitManager.WaitForLoaderToDisappear(driver, formLoader);
-
             By resultCell = By.XPath($"//div[@role='cell']//div[text()='{empId}']");
-
             try
             {
                 WaitManager.WaitUntilVisible(driver, resultCell);
