@@ -1,68 +1,81 @@
 name: CI - Run Selenium Tests
 
 on:
-  push:
-    branches: [ "main", "master", "framework-refactor" ]
-  pull_request:
-    branches: [ "main", "master" ]
+push:
+branches: [ "main", "master", "framework-refactor" ]
+pull_request:
+branches: [ "main", "master" ]
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+CI: true   #  forces your framework into CI mode
 
 permissions:
-  checks: write
-  pull-requests: write
-  contents: read
+checks: write
+pull-requests: write
+contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+strategy:
+  fail-fast: false
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '8.0.x' 
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt install -y google-chrome-stable
+  - name: Setup .NET
+    uses: actions/setup-dotnet@v5
+    with:
+      dotnet-version: '8.0.x'
 
-      - name: Install ChromeDriver
-        uses: nanasess/setup-chromedriver@v2
+  - name: Install Google Chrome
+    run: |
+      sudo apt-get update
+      sudo apt install -y google-chrome-stable
 
-      - name: Restore and Build
-        run: |
-          dotnet restore
-          dotnet build --configuration Release --no-restore
+  - name: Install ChromeDriver
+    uses: nanasess/setup-chromedriver@v2
 
-      - name: Run Selenium tests
-        run: |
-          # Run solution with Release | Any CPU, respecting NUnit class-level parallelism
-          dotnet test OrangeHRMHybridAutomationFramework.sln -c Release -p:Platform="Any CPU" --logger "trx;LogFileName=test_results.trx"
+  # increase shared memory (prevents Chrome crash)
+  - name: Fix Chrome memory issue
+    run: |
+      sudo mount -o remount,size=2G /dev/shm
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: always() 
-        with:
-          name: NUnit Selenium Tests
-          path: "**/test_results.trx"
-          reporter: dotnet-trx
+  - name: Restore and Build
+    run: |
+      dotnet restore
+      dotnet build --configuration Release --no-restore
 
-      - name: Upload Screenshots on Failure
-        if: failure()
-        uses: actions/upload-artifact@v5
-        with:
-          name: selenium-screenshots
-          path: "**/Reports/Screenshots/*.png"
+  - name: Run Selenium tests (Stable Parallel)
+    run: |
+      dotnet test OrangeHRMHybridAutomationFramework.sln \
+      -c Release \
+      --no-build \
+      --logger "trx;LogFileName=test_results.trx" \
+      -- NUnit.NumberOfTestWorkers=1
 
-      - name: Upload Extent Reports
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: Extent-Automation-Report
-          path: "**/Reports/"
+  - name: Test Report
+    uses: dorny/test-reporter@v1
+    if: always()
+    with:
+      name: NUnit Selenium Tests
+      path: "**/test_results.trx"
+      reporter: dotnet-trx
+
+  - name: Upload Screenshots on Failure
+    if: failure()
+    uses: actions/upload-artifact@v5
+    with:
+      name: selenium-screenshots
+      path: "**/Reports/Screenshots/*.png"
+
+  - name: Upload Extent Reports
+    if: always()
+    uses: actions/upload-artifact@v5
+    with:
+      name: Extent-Automation-Report
+      path: "**/Reports/"
+```
