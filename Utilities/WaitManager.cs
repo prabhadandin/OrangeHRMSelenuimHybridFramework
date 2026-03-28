@@ -55,10 +55,12 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                 return false;
             }
         }
+
         public static void WaitForLoaderToDisappear(IWebDriver driver, By loaderLocator, int seconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loaderLocator));
         }
-    }
+
+     }
 }

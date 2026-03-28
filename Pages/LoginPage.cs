@@ -13,25 +13,17 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         private By btnLogin = By.XPath("//button[@type='submit']");
         private By fieldError = By.CssSelector(".oxd-input-field-error-message");
         private By loginError = By.XPath("//p[contains(@class,'oxd-alert-content-text')]");
-
         public LoginPage(IWebDriver driver) => this.driver = driver;
         public void Login(string username, string password)
         {
             // wait for page to fully render
             WaitManager.WaitUntilVisible(driver, By.TagName("body"));
-            //WaitManager.WaitUntilVisible(driver, txtUsername).SendKeys(username);
-            //WaitManager.WaitUntilVisible(driver, txtPassword).SendKeys(password);
-            //WaitManager.WaitUntilClickable(driver, btnLogin).Click();
-            // 🔥 WAIT specifically for username field (important)
             var user = WaitManager.WaitUntilVisible(driver, txtUsername,30);
             user.Clear();
             user.SendKeys(username);
-
             var pass = WaitManager.WaitUntilVisible(driver, txtPassword);
             pass.Clear();
             pass.SendKeys(password);
-            
-
             WaitManager.WaitUntilClickable(driver, btnLogin).Click();
         }
         public string GetFieldErrorMessage()
@@ -39,8 +31,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
             var elements = driver.FindElements(fieldError);
             return elements.Count > 0 ? elements[0].Text : string.Empty;
         }
-
-        // ✅ robust login error (toast or inline)
+        // login error (toast or inline)
         public string GetErrorMessage()
         {
             try
@@ -54,9 +45,7 @@ namespace OrangeHRMHybridAutomationFramework.Pages
             }
         
     }
-       // public string GetFieldErrorMessage() => driver.FindElement(fieldError).Text;
-        //public string GetErrorMessage() => driver.FindElement(loginError).Text;
-        public void Logout()
+ public void Logout()
          {
              var userMenu = By.XPath("//span[@class='oxd-userdropdown-tab']");
              var logoutBtn = By.XPath("//a[text()='Logout']");

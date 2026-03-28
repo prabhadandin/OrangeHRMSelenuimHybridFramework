@@ -88,9 +88,10 @@ namespace OrangeHRMHybridAutomationFramework.Base
                 .Replace(" ", "_");
             string screenshotName = $"{safeTestName}_{timestamp}";
             string screenshotPath = CaptureScreenshot(screenshotName);
-            string base64 = ((ITakesScreenshot)driver.Value)
+            
+           /* string base64 = ((ITakesScreenshot)driver.Value)
                 .GetScreenshot()
-                .AsBase64EncodedString;
+                .AsBase64EncodedString;*/
             if (status == TestStatus.Failed)
             {
                 test.Value.Log(Status.Fail, "Test Failed: " + message);
