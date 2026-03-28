@@ -2,13 +2,18 @@ name: CI - Run Selenium Tests
 
 on:
 push:
-branches: [ "main", "master", "framework-refactor" ]
+branches:
+- main
+- master
+- framework-refactor
 pull_request:
-branches: [ "main", "master" ]
+branches:
+- main
+- master
 
 env:
 FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-CI: true   #  forces your framework into CI mode
+CI: true
 
 permissions:
 checks: write
@@ -19,6 +24,7 @@ jobs:
 build:
 runs-on: ubuntu-latest
 
+```
 strategy:
   fail-fast: false
 
@@ -39,7 +45,6 @@ steps:
   - name: Install ChromeDriver
     uses: nanasess/setup-chromedriver@v2
 
-  # increase shared memory (prevents Chrome crash)
   - name: Fix Chrome memory issue
     run: |
       sudo mount -o remount,size=2G /dev/shm
