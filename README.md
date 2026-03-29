@@ -30,19 +30,23 @@ It automates key functionalities of the **OrangeHRM** demo application, includin
 Base/
 └── BaseTest.cs          # Setup/Teardown for Driver & Reports
 
+
 Pages/
 ├── LoginPage.cs         # Locators & Actions for Login
 └── PIMPage.cs           # Locators & Actions for Employee Management
 
+
 Tests/
 ├── LoginTest.cs         # Authentication Test Suites
 └── PIMTest.cs           # E2E Employee Workflow Test Suites
+
 
 Utilities/
 ├── DriverSetup.cs       # Browser Factory 
 ├── WaitManager.cs       # Explicit & Fluent Wait wrappers
 ├── ExcelManager.cs      # Data-reading logic
 └── ExtentManager.cs     # Reporting configuration
+
 
 TestData/
 └── EmployeeData.xlsx    # External Test Data
