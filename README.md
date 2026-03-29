@@ -111,6 +111,7 @@ Publishes test artifacts (Extent Reports).
 Clone repository
 
 --bash--
+
 1.git clone https://github.com/your-username/OrangeHRMSeleniumHybridFramework.git
 
 2.Open solution in Visual Studio 22
@@ -122,5 +123,6 @@ Clone repository
 6.Run tests via Test Explorer or via CLI:
 
 --bash
+
 dotnet test
 
