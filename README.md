@@ -1,21 +1,32 @@
-# 🧪 OrangeHRM Selenium Hybrid Automation Framework (C#)
-This is a real-world Selenium Hybrid Automation Framework built using C#, NUnit, and Selenium WebDriver. 
-The framework follows the Page Object Model (POM) design and supports Data-Driven Testing, Excel integration, Extent Reports, and CI/CD execution via GitHub Actions.
-It automates key functionalities of the OrangeHRM demo application, including login validation and employee management (PIM module).
-## 🎯 Target Application
+## 🧪 OrangeHRM Selenium Hybrid Automation Framework (C#)
+
+This is a real-world Selenium Hybrid Automation Framework built using **C#, NUnit, and Selenium WebDriver**. The framework follows the **Page Object Model (POM)** design and supports Data-Driven Testing, Excel integration, Extent Reports, and CI/CD execution via GitHub Actions.
+
+It automates key functionalities of the **OrangeHRM** demo application, including login validation and employee management (PIM module).
+
+---
+
+### 🎯 Target Application
 - **Application:** OrangeHRM Open Source
 - **URL:** [https://opensource-demo.orangehrmlive.com](https://opensource-demo.orangehrmlive.com)
 - **Purpose:** Automating End-to-End (E2E) Human Resources Management workflows.
--  **Workflows:** Automating HR Admin tasks including Login, Employee Creation, and Records Search.
-## 🚀 Tech Stack
-- Language: C# (.NET)
-- Engine: Selenium WebDriver
-- Test Runner: NUnit
-- Reporting: ExtentReports (HTML)
-- Data Handling: Excel (Data-Driven)
-- CI/CD: GitHub Actions (YAML Pipeline)
-- Architecture: Page Object Model (POM)
-## 📁 Project Structure
+- **Workflows:** Automating HR Admin tasks including Login, Employee Creation, and Records Search.
+
+---
+
+### 🚀 Tech Stack
+- **Language:** C# (.NET)
+- **Engine:** Selenium WebDriver
+- **Test Runner:** NUnit
+- **Reporting:** ExtentReports (HTML)
+- **Data Handling:** Excel (Data-Driven)
+- **CI/CD:** GitHub Actions (YAML Pipeline)
+- **Architecture:** Page Object Model (POM)
+
+---
+
+### 📁 Project Structure
+
 Base/
 └── BaseTest.cs          # Setup/Teardown for Driver & Reports
 Pages/
@@ -35,6 +46,7 @@ Reports/
 └── ExtentReport.html    # Generated Test Results
 screenshots/
 └── tests.png            # Automated captures
+
 ✨ Key Features
 ✔ End-to-End (E2E) Testing
 Integrated Workflows: Validates the full flow of logging in, creating an employee record, and verifying its existence via search.
@@ -65,12 +77,14 @@ Step-by-step execution logs.
 Pass/Fail status with timestamps.
 Automated Screenshots attached to failed test steps.
 Visual dashboard of test execution summary.
+
 ⚡ CI/CD Integration
 This project is integrated with GitHub Actions for continuous testing. The pipeline:
 Restores NuGet dependencies.
 Builds the solution.
 Executes NUnit tests in Headless mode.
 Publishes test artifacts (Extent Reports).
+
 ⚙️ How to Run
 Clone repository
 --bash--
