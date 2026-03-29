@@ -61,26 +61,35 @@ screenshots/
 ✔ End-to-End (E2E) Testing
 Integrated Workflows: Validates the full flow of logging in, creating an employee record, and verifying its existence via search.
 Data Integrity: Ensures that data entered in the UI is correctly persisted and retrievable.
+
+
 ✔ Reporting & Screenshots
 Extent Reports: Detailed HTML reports with step-by-step execution logs.
 Auto-Screenshot: Captures and attaches screenshots to the report on test failure.
+
+
 ✔ Framework Design
 Page Object Model: Clean separation of UI elements and test logic.
 Reusable Utilities: Centralized logic for Driver Setup, Waits, Excel, and Reporting.
 Scalable Architecture: Hybrid design allowing for easy addition of new modules.
+
 ✔ Data-Driven Testing
 Excel Integration: Employee test data is pulled directly from .xlsx files.
 Dynamic Iteration: Supports running the same test across multiple datasets.
+
 ✔ PIM Module Automation
 Add Employee: Handles auto-generated IDs from the application.
 Search Employee: Verification by ID and Name.
 Validation: Handles duplicate detection and flow verification.
+
 ✔ Login Module Automation
 Positive Testing: Valid credential access.
 Negative Scenarios:
 Empty Username/Password fields.
 Invalid credentials & case-sensitivity checks.
 Partial credential entry (Username only/Password only).
+
+
 📊 Extent Reports
 The framework generates detailed HTML reports including:
 Step-by-step execution logs.
@@ -88,12 +97,14 @@ Pass/Fail status with timestamps.
 Automated Screenshots attached to failed test steps.
 Visual dashboard of test execution summary.
 
+
 ⚡ CI/CD Integration
 This project is integrated with GitHub Actions for continuous testing. The pipeline:
 Restores NuGet dependencies.
 Builds the solution.
 Executes NUnit tests in Headless mode.
 Publishes test artifacts (Extent Reports).
+
 
 ⚙️ How to Run
 Clone repository
@@ -106,5 +117,3 @@ Clone repository
 --bash
 dotnet test
 
-Test Explorer OR
-GitHub Actions pipeline
