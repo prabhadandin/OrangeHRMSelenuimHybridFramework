@@ -5,6 +5,8 @@ This is a real-world Selenium Hybrid Automation Framework built using **C#, NUni
 It automates key functionalities of the **OrangeHRM** demo application, including login validation and employee management (PIM module).
 
 ---
+## 🌐 Live Test Report
+(https://prabhadandin.github.io/OrangeHRMSeleniumHybridFramework/TestReport.html)
 
 ### 🎯 Target Application
 - **Application:** OrangeHRM Open Source
