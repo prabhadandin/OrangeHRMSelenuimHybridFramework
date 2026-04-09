@@ -6,7 +6,7 @@ It automates key functionalities of the **OrangeHRM** demo application, includin
 
 ---
 ## 🌐 Live Test Report
-(https://prabhadandin.github.io/OrangeHRMSeleniumHybridFramework/TestReport.html)
+(https://prabhadandin.github.io/OrangeHRMSeleniumHybridFramework/ExtentReport.html)
 
 ### 🎯 Target Application
 - **Application:** OrangeHRM Open Source
