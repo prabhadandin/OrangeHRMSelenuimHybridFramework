@@ -35,13 +35,13 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         public string AddEmployee(string firstName,string middleName,string lastName)
         {
             WaitManager.WaitUntilClickable(driver,btnAddEmployee).Click();
-            WaitManager.WaitUntilVisible(driver, txtFirstName,20);
+            WaitManager.WaitUntilVisible(driver, txtFirstName,25);
             WaitManager.WaitUntilVisible(driver,txtFirstName).SendKeys(firstName);
             WaitManager.WaitUntilVisible(driver,txtMiddleName).SendKeys(middleName);
             WaitManager.WaitUntilVisible(driver,txtLastName).SendKeys(lastName);
-            var idField = WaitManager.WaitUntilVisible(driver,txtEmployeeId,20);
+            var idField = WaitManager.WaitUntilVisible(driver,txtEmployeeId,25);
             string empId = idField.GetAttribute("value");
-            WaitManager.WaitForLoaderToDisappear(driver, formLoader);
+            WaitManager.WaitForLoaderToDisappear(driver, formLoader,25);
             WaitManager.WaitUntilClickable(driver,btnSave).Click();
             // check duplicate
             var duplicate = driver.FindElements(txtIdDuplicateError);
@@ -58,17 +58,17 @@ namespace OrangeHRMHybridAutomationFramework.Pages
         public bool SearchEmployeeById(string empId)
         {
             WaitManager.WaitUntilClickable(driver, menuEmployeeList).Click();
-            WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
-            var searchField = WaitManager.WaitUntilVisible(driver, searchEmpIdField);
+            WaitManager.WaitForLoaderToDisappear(driver, tableLoader,25);
+            var searchField = WaitManager.WaitUntilVisible(driver, searchEmpIdField,25);
             searchField.SendKeys(Keys.Control + "a");
             searchField.SendKeys(Keys.Backspace);
             searchField.SendKeys(empId);
             WaitManager.WaitUntilClickable(driver, searchButton).Click();
-            WaitManager.WaitForLoaderToDisappear(driver, tableLoader);
+            WaitManager.WaitForLoaderToDisappear(driver, tableLoader,25);
             By resultCell = By.XPath($"//div[@role='cell']//div[text()='{empId}']");
             try
             {
-                WaitManager.WaitUntilVisible(driver, resultCell,10);
+                WaitManager.WaitUntilVisible(driver, resultCell,20);
                 return true;
             }
             catch (WebDriverTimeoutException)
