@@ -47,47 +47,53 @@ namespace OrangeHRMHybridAutomationFramework.Base
         {
             var status = TestContext.CurrentContext.Result.Outcome.Status;
             var message = TestContext.CurrentContext.Result.Message;
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string testName = TestContext.CurrentContext.Test.Name;
 
-            string safeTestName = new string(testName
-                .Where(c => !Path.GetInvalidFileNameChars().Contains(c))
-                .ToArray());
-
-            safeTestName = safeTestName
-                .Replace("\"", "_")
-                .Replace("(", "_")
-                .Replace(")", "_")
-                .Replace(",", "_")
-                .Replace(" ", "_");
-
-            string screenshotName = $"{safeTestName}_{timestamp}";
-            string screenshotPath = "";
-
-            // null-safe screenshot
-            if (driver.Value != null)
+            if (status == TestStatus.Failed)
             {
-                try
-                {
-                    screenshotPath = CaptureScreenshot(screenshotName);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Failed to capture screenshot: " + ex.Message);
-                }
-            }
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string testName = TestContext.CurrentContext.Test.Name;
 
-            if (status == TestStatus.Failed && !string.IsNullOrEmpty(screenshotPath))
-            {
-                test.Value.Log(Status.Fail, "Test Failed: " + message);
-                test.Value.AddScreenCaptureFromPath(screenshotPath);
+                string safeTestName = new string(testName
+                    .Where(c => !Path.GetInvalidFileNameChars().Contains(c))
+                    .ToArray());
+
+                safeTestName = safeTestName
+                    .Replace("\"", "_")
+                    .Replace("(", "_")
+                    .Replace(")", "_")
+                    .Replace(",", "_")
+                    .Replace(" ", "_");
+
+                string screenshotName = $"{safeTestName}_{timestamp}";
+                string screenshotPath = "";
+
+                // null-safe screenshot
+                if (driver.Value != null)
+                {
+                    try
+                    {
+                        screenshotPath = CaptureScreenshot(screenshotName);
+                        // Log failure and attach the screenshot to ExtentReports
+                        test.Value.Log(Status.Fail, "Test Failed: " + message);
+                        if (!string.IsNullOrEmpty(screenshotPath))
+                        {
+                            test.Value.AddScreenCaptureFromPath(screenshotPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Failed to capture screenshot: " + ex.Message);
+                    }
+                }
             }
             else
             {
                 test.Value.Log(Status.Pass, "Test Passed");
             }
-            driver.Value?.Quit();
-        }
+            
+                driver.Value?.Quit();
+            }
+        
 
         [OneTimeTearDown]
         public void GlobalTearDown()
