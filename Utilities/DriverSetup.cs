@@ -25,8 +25,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
             service.HideCommandPromptWindow = true;
             var driver = new ChromeDriver(service, options);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-
             return driver;
         }
     }

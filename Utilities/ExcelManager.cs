@@ -15,10 +15,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
             List<TestCaseData> testData = new List<TestCaseData>();
             try
             {
-
-                /* string filePath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName,
-                  "TestData",
-                  "EmployeeData.xlsx");*/
                 string filePath = Path.Combine(
                      TestContext.CurrentContext.TestDirectory,
                      "TestData",
@@ -34,10 +30,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                     DataTable table = result.Tables[sheetName];
                     if (table == null)
                     {
-                        /* List all available sheets to help you debug
-                        string availableSheets = string.Join(", ", result.Tables.Cast<DataTable>().Select(t => t.TableName));
-                        Assert.Fail($"Excel data load failed: Sheet '{sheetName}' not found. Available sheets: [{availableSheets}]");
-                        yield break;*/
                         throw new Exception($"Sheet {sheetName} not found.");
                     }
                         
@@ -46,7 +38,6 @@ namespace OrangeHRMHybridAutomationFramework.Utilities
                         string firstName = row["FirstName"].ToString()??"" ;
                         string middleName = row["MiddleName"].ToString()??"";
                         string lastName = row["LastName"].ToString()??"";
-                       // string employeeId = row["EmployeeID"].ToString()??"";
                         testData.Add(new TestCaseData(firstName, middleName, lastName));
 
                     }
